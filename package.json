@@ -1,0 +1,32 @@
+{
+  "name": "minecraftsitev3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "db": "surreal start --bind 127.0.0.1:8001 --log debug --user root --pass root file://\"./database/storage/\"",
+    "dev": "npx nodemon"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Drigster/MinecraftSiteV3.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Drigster/MinecraftSiteV3/issues"
+  },
+  "homepage": "https://github.com/Drigster/MinecraftSiteV3#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "nunjucks": "^3.2.3",
+    "surrealdb.js": "^0.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
