@@ -5,6 +5,12 @@
 		<title>{% block title %}{% endblock %}</title>
 	</head>
 	<body>
+		<header>
+			<a href="/">
+				<h1>DisePVP</h1>
+			</a>
+		</header>
+		{% include "nav.html" %}
 		{% block content %}{% endblock %}
 	</body>
 </html>
