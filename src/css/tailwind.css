@@ -8,6 +8,11 @@
 }
 
 @layer base {
+    h1, h2, h3, h4, h5, h6 {
+        font-size: inherit;
+        font-weight: 400;
+        @apply text-foxy-orange;
+    }
     h1 {
         @apply text-7xl;
     }
@@ -23,12 +28,19 @@
     h5 {
         @apply text-3xl;
     }
-    body {
+    html, body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+        height: 100%;
+    }
+    .body {
         display: flex;
         flex-flow: column;
         position: relative;
+        min-height: 100%;
         font-family: 'minecraft';
-        color: #3eb9e5;
+        @apply text-foxy-blue;
         background-color: #404040;
         background-image: url("../img/Background.png");
         background-size: cover;
@@ -37,12 +49,28 @@
         background-attachment: fixed;
     }
     header {
-        position: relative;
-        padding: 30px;
-        text-align: center;
-        color: #fc6f53;
+        @apply text-foxy-orange;
     }
     nav {
-        background-color: rgba(0,0,0,0.6);
+        @apply bg-bg;
+    }
+    .content {
+        @apply bg-bg;
+        border-radius: 15px;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        padding: 2rem;
+        flex: 1 1 !important;
+    }
+    ol {
+        list-style-type: decimal;
+        @apply pl-5;
+    }
+    .link {
+        @apply text-foxy-orange;
+        @apply underline;
+    }
+    .link:hover {
+        @apply no-underline;
     }
 }
