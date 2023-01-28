@@ -13,32 +13,39 @@
         font-weight: 400;
         @apply text-foxy-orange;
     }
+
     h1 {
         @apply text-7xl;
     }
+
     h2 {
         @apply text-6xl;
     }
+
     h3 {
         @apply text-5xl;
     }
+
     h4 {
         @apply text-4xl;
     }
+
     h5 {
         @apply text-3xl;
     }
+
     html, body {
         width: 100%;
         max-width: 100%;
         overflow-x: hidden;
         height: 100%;
     }
+
     .body {
-        display: flex;
-        flex-flow: column;
-        position: relative;
-        min-height: 100%;
+        @apply flex;
+        @apply flex-col;
+        @apply relative;
+        @apply min-h-full;
         font-family: 'minecraft';
         @apply text-foxy-blue;
         background-color: #404040;
@@ -48,29 +55,67 @@
         background-position: center, top;
         background-attachment: fixed;
     }
+
     header {
         @apply text-foxy-orange;
     }
+
     nav {
         @apply bg-bg;
     }
+
     .content {
         @apply bg-bg;
-        border-radius: 15px;
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-        padding: 2rem;
-        flex: 1 1 !important;
+        @apply rounded-2xl;
+        @apply my-4;
+        @apply p-8;
+        @apply flex-1;
     }
+
     ol {
-        list-style-type: decimal;
+        @apply list-decimal;
         @apply pl-5;
     }
+
     .link {
         @apply text-foxy-orange;
         @apply underline;
     }
+
     .link:hover {
         @apply no-underline;
+    }
+
+    button, input {
+        @apply my-1;
+        background-color: #101010 !important;
+        @apply border;
+        @apply border-foxy-orange;
+        @apply rounded-md;
+        @apply py-2;
+    }
+    
+    input[type=text], input[type=password] {
+        @apply pl-2;
+    }
+    
+    input[type=file] {
+        @apply w-full;
+    }
+    
+    input[type=file]:hover {
+        background-color: rgba(255,255,255,0.05);
+    }
+    
+    input[type=file]::file-selector-button {
+        background-color: rgba(0,0,0,0.25);
+        @apply text-foxy-orange;
+        border: unset;
+        @apply border-r;
+        @apply border-foxy-orange;
+    }
+
+    button:hover {
+        background-color: rgba(255,255,255,0.05);
     }
 }

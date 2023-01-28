@@ -460,7 +460,7 @@ html, body {
 
 .body {
   display: flex;
-  flex-flow: column;
+  flex-direction: column;
   position: relative;
   min-height: 100%;
   font-family: 'minecraft';
@@ -485,11 +485,11 @@ nav {
 
 .content {
   background-color: rgba(0,0,0,0.6);
-  border-radius: 15px;
+  border-radius: 1rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
   padding: 2rem;
-  flex: 1 1 !important;
+  flex: 1 1 0%;
 }
 
 ol {
@@ -505,6 +505,44 @@ ol {
 
 .link:hover {
   text-decoration-line: none;
+}
+
+button, input {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+  background-color: #101010 !important;
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgb(252 111 83 / var(--tw-border-opacity));
+  border-radius: 0.375rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+input[type=text], input[type=password] {
+  padding-left: 0.5rem;
+}
+
+input[type=file] {
+  width: 100%;
+}
+
+input[type=file]:hover {
+  background-color: rgba(255,255,255,0.05);
+}
+
+input[type=file]::file-selector-button {
+  background-color: rgba(0,0,0,0.25);
+  --tw-text-opacity: 1;
+  color: rgb(252 111 83 / var(--tw-text-opacity));
+  border: unset;
+  border-right-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgb(252 111 83 / var(--tw-border-opacity));
+}
+
+button:hover {
+  background-color: rgba(255,255,255,0.05);
 }
 
 *, ::before, ::after {
@@ -651,9 +689,22 @@ ol {
   margin-right: 1rem;
 }
 
+.my-4 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
+}
+
+.mt-6 {
+  margin-top: 1.5rem;
+}
+
+.mt-8 {
+  margin-top: 2rem;
 }
 
 .ml-4 {
@@ -662,10 +713,6 @@ ol {
 
 .mr-1 {
   margin-right: 0.25rem;
-}
-
-.mb-2 {
-  margin-bottom: 0.5rem;
 }
 
 .block {
@@ -708,6 +755,14 @@ ol {
   height: 2.5rem;
 }
 
+.min-h-full {
+  min-height: 100%;
+}
+
+.w-full {
+  width: 100%;
+}
+
 .w-56 {
   width: 14rem;
 }
@@ -722,6 +777,10 @@ ol {
 
 .w-10 {
   width: 2.5rem;
+}
+
+.max-w-md {
+  max-width: 28rem;
 }
 
 .flex-1 {
@@ -748,6 +807,18 @@ ol {
   gap: 0.5rem;
 }
 
+.space-y-8 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(2rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(2rem * var(--tw-space-y-reverse));
+}
+
+.-space-y-px > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(-1px * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(-1px * var(--tw-space-y-reverse));
+}
+
 .space-x-4 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-x-reverse: 0;
   margin-right: calc(1rem * var(--tw-space-x-reverse));
@@ -760,25 +831,20 @@ ol {
   margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
 }
 
-.rounded-md {
-  border-radius: 0.375rem;
+.rounded-2xl {
+  border-radius: 1rem;
 }
 
-.rounded-full {
-  border-radius: 9999px;
+.rounded-md {
+  border-radius: 0.375rem;
 }
 
 .rounded-xl {
   border-radius: 0.75rem;
 }
 
-.border-2 {
-  border-width: 2px;
-}
-
-.border-orange-400 {
-  --tw-border-opacity: 1;
-  border-color: rgb(251 146 60 / var(--tw-border-opacity));
+.rounded-full {
+  border-radius: 9999px;
 }
 
 .bg-bg {
@@ -789,12 +855,23 @@ ol {
   padding: 2rem;
 }
 
-.p-4 {
-  padding: 1rem;
-}
-
 .p-2 {
   padding: 0.5rem;
+}
+
+.py-12 {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .px-2 {
@@ -807,9 +884,8 @@ ol {
   padding-right: 0.75rem;
 }
 
-.py-2 {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+.pb-4 {
+  padding-bottom: 1rem;
 }
 
 .pr-2 {
@@ -828,20 +904,13 @@ ol {
   padding-bottom: 0.75rem;
 }
 
-.pb-2 {
-  padding-bottom: 0.5rem;
-}
-
-.pb-4 {
-  padding-bottom: 1rem;
-}
-
 .text-center {
   text-align: center;
 }
 
-.text-\[0\.65rem\] {
-  font-size: 0.65rem;
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
 }
 
 .text-sm {
@@ -849,13 +918,36 @@ ol {
   line-height: 1.25rem;
 }
 
+.text-\[0\.65rem\] {
+  font-size: 0.65rem;
+}
+
 .text-base {
   font-size: 1rem;
   line-height: 1.5rem;
 }
 
+.font-bold {
+  font-weight: 700;
+}
+
 .font-medium {
   font-weight: 500;
+}
+
+.tracking-tight {
+  letter-spacing: -0.025em;
+}
+
+.text-foxy-orange {
+  --tw-text-opacity: 1;
+  color: rgb(252 111 83 / var(--tw-text-opacity));
+}
+
+.shadow-sm {
+  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
 @font-face {
@@ -881,6 +973,11 @@ ol {
     align-items: stretch;
   }
 
+  .sm\:px-6 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
   .sm\:pr-0 {
     padding-right: 0px;
   }
@@ -890,5 +987,10 @@ ol {
   .lg\:mx-12 {
     margin-left: 3rem;
     margin-right: 3rem;
+  }
+
+  .lg\:px-8 {
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 }

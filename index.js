@@ -3,6 +3,7 @@ import nunjucks from 'nunjucks';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
+import authRouter from "./routers/authRouter.js"
 
 const app = express();
 dotenv.config();
@@ -28,6 +29,8 @@ nunjucks.configure('views', {
 app.get("/", (req, res) => {
 	res.render("index");
 });
+
+app.use("/", authRouter);
 
 app.listen(process.env.PORT, () => {
   	console.log(`Example app running on http://localhost:${process.env.PORT}`);

@@ -8,9 +8,7 @@
 		<div class="body">
 			{% include "./partials/header.html" %}
 			{% include "./partials/nav.html" %}
-			<div class="lg:mx-12 mx-4 h-auto content">
-				{% block content %}{% endblock %}
-			</div>
+			{% block content %}{% endblock %}
 		</div>
 	</body>
 </html>
