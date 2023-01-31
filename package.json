@@ -20,12 +20,15 @@
   },
   "homepage": "https://github.com/Drigster/MinecraftSiteV3#readme",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
+    "jwt-express": "^1.1.0",
     "nunjucks": "^3.2.3",
-    "surrealdb.js": "^0.5.0"
+    "surrealdb.js": "^0.5.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.20",

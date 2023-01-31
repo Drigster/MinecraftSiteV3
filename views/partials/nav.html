@@ -36,26 +36,30 @@
 						<a href="/download" class="px-3 py-2 rounded-md text-sm font-medium">Скачать лаунчер</a>
 						<a href="/servers" class="px-3 py-2 rounded-md text-sm font-medium">Сервера</a>
 						<a href="/rules" class="hover: px-3 py-2 rounded-md text-sm font-medium">Правила</a>
-						{% if condition %}
-							<a href="/login" class="px-3 py-2 rounded-md text-sm font-medium">Войти</a>
-						{% else %}
+						{% if user %}
 							<a href="/logout" class="px-3 py-2 rounded-md text-sm font-medium">Выйти</a>
+						{% else %}
+							<a href="/login" class="px-3 py-2 rounded-md text-sm font-medium">Войти</a>
 						{% endif %}
-						{% if admin %}
-							<a href="/admin" class="px-3 py-2 rounded-md text-sm font-medium">Админка</a>
+						{% if user %}
+							{% if user.permissions|contains("admin") %}
+								<a href="/admin" class="px-3 py-2 rounded-md text-sm font-medium">Админка</a>
+							{% endif %}
 						{% endif %}
 					</div>
 				</div>
 			</div>
-			<a class="absolute inset-y-0 right-0 flex items-center pr-2 sm:ml-6 sm:pr-0" href="/profile">
-				<div class="inline-block">
-					<img class="h-10 w-10" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-				</div>
-				<div class="inline-block pl-2 text-center">
-					<div>Drigster</div>
-					<div class="text-[0.65rem] link">В профиль</div>
-				</div>
-			</a>
+			{% if user %}
+				<a class="absolute inset-y-0 right-0 flex items-center pr-2 sm:ml-6 sm:pr-0" href="/profile">
+					<div class="inline-block">
+						<img class="h-10 w-10" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+					</div>
+					<div class="inline-block pl-2 text-center">
+						<div>{{ user.username }}</div>
+						<div class="text-[0.65rem] link">В профиль</div>
+					</div>
+				</a>
+			{% endif %}
 		</div>
 	</div>
 	<div class="sm:hidden" id="mobile-menu" style="display: none;">
@@ -64,8 +68,10 @@
 			<a href="/servers" class="px-3 py-2 rounded-md block text-base font-medium">Сервера</a>
 			<a href="/rules" class="px-3 py-2 rounded-md block text-base font-medium">Правила</a>
 			<a href="/login" class="px-3 py-2 rounded-md block text-base font-medium">Войти</a>
-			{% if admin %}
-				<a href="/admin" class="px-3 py-2 rounded-md text-base font-medium">Админка</a>
+			{% if user %}
+				{% if user.permissions|contains("admin") %}
+					<a href="/admin" class="px-3 py-2 rounded-md block text-base font-medium">Админка</a>
+				{% endif %}
 			{% endif %}
 		</div>
 	</div>

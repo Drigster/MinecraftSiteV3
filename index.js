@@ -3,10 +3,14 @@ import nunjucks from 'nunjucks';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import authRouter from "./routers/authRouter.js"
+import jwt from 'jwt-express';
+import authRouter from "./routers/authRouter.js";
+import { initDB } from "./database/surreal.js";
+import FlashMessages from './middleware/NunjucksGlobals.js';
 
 const app = express();
 dotenv.config();
+initDB();
 
 app.set('views', './views');
 app.set('view engine', 'html');
@@ -20,11 +24,18 @@ app.use(session({
 	saveUninitialized: false
 }));
 app.use(cookieParser());
+app.use(jwt.init(process.env.JWT_SECRET, { cookie: "jwt",  }))
 
-nunjucks.configure('views', {
+const env = nunjucks.configure('views', {
     autoescape: true,
     express: app
 });
+
+env.addFilter('contains', function(array, str) {
+    return array.includes(str);
+});
+
+app.use(FlashMessages);
 
 app.get("/", (req, res) => {
 	res.render("index");
