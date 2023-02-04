@@ -56,7 +56,11 @@ export async function initDB() {
                     "user",
                     "moderator",
                     "admin"
-                ]
+                ],
+                info: {
+                    regDate: Date.now(),
+                    lastPlayed: -1
+                }
             })
             .then((res) => {
                 console.log("Created default user", res);

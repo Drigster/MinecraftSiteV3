@@ -40,8 +40,8 @@ router.post("/register", async (req, res) => {
         await db.create("user", {
             uuid: uuid(),
             username: req.body.username,
-            email: req.body.email,
             password: bcrypt.hashSync(req.body.password, 10),
+            email: req.body.email,
             verfied: false,
             permissions: [
                 "user"
@@ -75,10 +75,10 @@ router.post("/login", async (req, res) => {
         req.session.error = "Пароль не верен!";
     }
     else {
+        delete user.password;
+        delete user.id;
         res.jwt({
-            username: user.username,
-            email: user.email,
-            permissions: user.permissions
+            user
         });
         return res.redirect("profile");
     }

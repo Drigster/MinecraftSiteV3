@@ -88,7 +88,7 @@
 
     button, input {
         @apply my-1;
-        @apply text-foxy-blue
+        @apply text-foxy-blue;
         background-color: #101010 !important;
         @apply border;
         @apply border-foxy-orange;
@@ -118,5 +118,13 @@
 
     button:hover {
         background-color: rgba(255,255,255,0.05);
+    }
+
+    .userTable {
+        @apply w-full;
+    }
+
+    .userTable td {
+        @apply p-2;
     }
 }

@@ -1,15 +1,15 @@
-{% extends "base.html" %}
+{% extends "base.njk" %}
 
 {% block title %}Hello World{% endblock %}
 <div></div>
 {% block content %}
-<div class="lg:mx-12 mx-4 h-auto content">
-	<div class="grid grid-cols-2">
-		<div class="w-1/3">
-			<div class="bg-green-500">
+<div class="lg:mx-12 mx-4 2xl:container h-auto content">
+	<div class="grid grid-cols-12 gap-2">
+		<div class="col-span-4">
+			<div class="bg-green-500 w-full h-full">
 				<canvas class="w-full h-full" id="skin_container" onLoad={load} onLoadStart={load}></canvas>
 			</div>
-			<div>
+			{#<div>
 				<div class="relative">
 					<h4>Скин</h4>
 					<label>Размер скина должен быть 64x64</label><br />
@@ -23,28 +23,48 @@
 						<h5>Недоступно...</h5>
 					</Disabled>
 				</div>
-			</div>
+			</div>#}
 		</div>
-		<div class="w-2/3">
-			<ul>
-				<li>
-					<span>Никнейм:</span>
-					<span id="nickname">{{ user.username }}</span>
-				</li>
-				<li>
-					<span>Почта:</span>
-					<span>{{ user.email }}</span>
-				</li>
-				<li>
-					<span>Дата регистрации:</span>
-					<span>{`${regDate.toLocaleString("ru", timeOptions)}`}</span>
-				</li>
-				<li>
-					<span>Последняя активность:</span>
-					<span>{`${lastPlayed.toLocaleString("ru", timeOptions)}`}</span>
-				</li>
-			</ul>
-			<div>
+		<div class="col-span-8">
+			<table class="userTable">
+				<tr>
+					<td>Никнейм</td>
+					<td id="nickname">{{ user.username }}</td>
+				</tr>
+				<tr>
+					<td>Почта</td>
+					<td>{{ user.email }}<a class="link pl-2" href="">Сменить</a></td>
+				</tr>
+				<tr>
+					<td>Статус аккаунта</td>
+					{% if user.verified %}
+						<td class="text-green-500">Верефицирован</td>
+					{% else %}
+						<td class="text-yellow-400">Не верефицирован</td>
+					{% endif %}
+				</tr>
+				<tr>
+					<td>Дата регистрации</td>
+					<td>{{ user.info.regDate|dateString}}</td>
+				</tr>
+				<tr>
+					<td>Последняя активность</td>
+					<td>{{ user.info.lastPlayed|dateString }}</td>
+				</tr>
+				<tr>
+					<td>Пароль</td>
+					<td>●●●●●●●●<a class="link pl-2" href="">Сменить</a></td>
+				</tr>
+				<tr>
+					<td>Cкин</td>
+					<td><a class="link" href="">Сбросить</a></td>
+				</tr>
+				<tr>
+					<td>Плащ</td>
+					<td><a class="link" href="">Сбросить</a></td>
+				</tr>
+			</table>
+			{#<div>
 				<span>
 					<button onClick={show}>Сменить ник</button>
 					<Change header="Сменить ник" fieldText="Никнейм" fieldName="username" />
@@ -53,11 +73,11 @@
 					<button onClick={show}>Сменить почту</button>
 					<Change header="Сменить почту" fieldText="Почта" fieldName="email" />
 				</span>
-				{#<span>
+				<span>
 					<button>Сменить пароль</button>
 					<Change header="Сменить пароль" fieldText="Новый пароль" fieldName="password" />
-				</span>#}
-			</div>
+				</span>
+			</div>#}
 		</div>
 		<div>
 			<h4>Активность за 30 дней</h4>

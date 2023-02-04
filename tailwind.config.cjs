@@ -4,6 +4,9 @@ const plugin = require('tailwindcss/plugin');
 module.exports = {
 	content: ["./views/**/*.html"],
 	theme: {
+		container: {
+			center: true,
+		},
 		extend: {
 			colors: {
 				"bg": "rgba(0,0,0,0.6)",

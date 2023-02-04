@@ -9,6 +9,7 @@ import { initDB } from "./database/surreal.js";
 import FlashMessages from './middleware/NunjucksGlobals.js';
 import authRouter from "./routers/authRouter.js";
 import apiRouter from "./routers/apiRouter.js";
+import { DateTime } from 'luxon';
 
 
 const app = express();
@@ -16,7 +17,7 @@ dotenv.config();
 initDB();
 
 app.set('views', './views');
-app.set('view engine', 'html');
+app.set('view engine', 'njk');
 
 app.use(express.static('./public'))
 app.use(express.urlencoded({ extended: true }));
@@ -36,6 +37,14 @@ const env = nunjucks.configure('views', {
 
 env.addFilter('contains', function(array, str) {
     return array.includes(str);
+});
+
+env.addFilter('dateString', function(str) {
+	if(parseInt(str) < 1){
+		return "Отсутствует";
+	}
+	const date = DateTime.fromMillis(parseInt(str));
+    return date.setLocale('ru').toLocaleString(DateTime.DATETIME_SHORT);
 });
 
 app.use(FlashMessages);
