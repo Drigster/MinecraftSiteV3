@@ -88,11 +88,12 @@
 
     button, input {
         @apply my-1;
+        @apply text-foxy-blue
         background-color: #101010 !important;
         @apply border;
         @apply border-foxy-orange;
         @apply rounded-md;
-        @apply py-2;
+        @apply p-2;
     }
     
     input[type=text], input[type=password] {
