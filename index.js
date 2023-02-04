@@ -4,9 +4,12 @@ import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import jwt from 'jwt-express';
-import authRouter from "./routers/authRouter.js";
+
 import { initDB } from "./database/surreal.js";
 import FlashMessages from './middleware/NunjucksGlobals.js';
+import authRouter from "./routers/authRouter.js";
+import apiRouter from "./routers/apiRouter.js";
+
 
 const app = express();
 dotenv.config();
@@ -42,6 +45,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/", authRouter);
+app.use("/", apiRouter);
 
 app.listen(process.env.PORT, () => {
   	console.log(`Example app running on http://localhost:${process.env.PORT}`);

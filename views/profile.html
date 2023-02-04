@@ -1,7 +1,81 @@
 {% extends "base.html" %}
 
 {% block title %}Hello World{% endblock %}
-
+<div></div>
 {% block content %}
-	{{ user.uername }}
+<div class="lg:mx-12 mx-4 h-auto content">
+	<div class="grid grid-cols-2">
+		<div class="w-1/3">
+			<div class="bg-green-500">
+				<canvas class="w-full h-full" id="skin_container" onLoad={load} onLoadStart={load}></canvas>
+			</div>
+			<div>
+				<div class="relative">
+					<h4>Скин</h4>
+					<label>Размер скина должен быть 64x64</label><br />
+					<input onChange={fileSelectedHandler} type="file" name="skin" />
+				</div>
+				<div class="relative">
+					<h4>Плащ</h4>
+					<label></label><br />
+					<input type="file" name="skin" />
+					<Disabled>
+						<h5>Недоступно...</h5>
+					</Disabled>
+				</div>
+			</div>
+		</div>
+		<div class="w-2/3">
+			<ul>
+				<li>
+					<span>Никнейм:</span>
+					<span id="nickname">{{ user.username }}</span>
+				</li>
+				<li>
+					<span>Почта:</span>
+					<span>{{ user.email }}</span>
+				</li>
+				<li>
+					<span>Дата регистрации:</span>
+					<span>{`${regDate.toLocaleString("ru", timeOptions)}`}</span>
+				</li>
+				<li>
+					<span>Последняя активность:</span>
+					<span>{`${lastPlayed.toLocaleString("ru", timeOptions)}`}</span>
+				</li>
+			</ul>
+			<div>
+				<span>
+					<button onClick={show}>Сменить ник</button>
+					<Change header="Сменить ник" fieldText="Никнейм" fieldName="username" />
+				</span>
+				<span>
+					<button onClick={show}>Сменить почту</button>
+					<Change header="Сменить почту" fieldText="Почта" fieldName="email" />
+				</span>
+				{#<span>
+					<button>Сменить пароль</button>
+					<Change header="Сменить пароль" fieldText="Новый пароль" fieldName="password" />
+				</span>#}
+			</div>
+		</div>
+		<div>
+			<h4>Активность за 30 дней</h4>
+			<div>
+				<table>
+					<thead>
+						<tr>
+							<td>IP аддрес</td>
+							<td>Дата</td>
+							<td>Тип</td>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+				<h5>Недоступно...</h5>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}

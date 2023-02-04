@@ -11,6 +11,13 @@ let db_pass = process.env.DATABASE_PASSWORD;
 
 const db = new Surreal(db_url);
 
+db.queryFirst = queryFirst;
+
+async function queryFirst(queryString) {
+    const query = await db.query(queryString);
+    return query[0].result[0];
+}
+
 export async function initDB() {
     try {
         console.log("Initializing database...");
@@ -40,7 +47,7 @@ export async function initDB() {
         const users = await db.select("user");
         if(users.length == 0){
             await db.create("user", {
-                id: uuid(),
+                uuid: uuid(),
                 username: "admin",
                 password: await bcrypt.hashSync("admin", 10),
                 email: "test@test.test",
