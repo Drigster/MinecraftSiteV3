@@ -2,10 +2,10 @@ const plugin = require('tailwindcss/plugin');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-	content: ["./views/**/*.html"],
+	content: ["./views/**/*.njk"],
 	theme: {
 		container: {
-			center: true,
+			center: true
 		},
 		extend: {
 			colors: {

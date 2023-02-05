@@ -2,6 +2,7 @@ import express from "express";
 import { v4 as uuid } from "uuid";
 import bcrypt from "bcrypt";
 import jwt from 'jwt-express';
+import { SkinViewer } from "skinview3d";
 
 import db from "../database/surreal.js";
 
@@ -89,7 +90,7 @@ router.get("/profile", (req, res) => {
     if(!req.jwt.valid){
         return res.redirect("login");
     }
-    res.render("profile");
+    res.render("profile", { SkinViewer: SkinViewer });
 });
 
 router.get("/logout", (req, res) => {

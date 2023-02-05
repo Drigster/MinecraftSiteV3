@@ -11,7 +11,6 @@ import authRouter from "./routers/authRouter.js";
 import apiRouter from "./routers/apiRouter.js";
 import { DateTime } from 'luxon';
 
-
 const app = express();
 dotenv.config();
 initDB();
@@ -55,7 +54,6 @@ app.get("/", (req, res) => {
 
 app.use("/", authRouter);
 app.use("/", apiRouter);
-
 app.listen(process.env.PORT, () => {
   	console.log(`Example app running on http://localhost:${process.env.PORT}`);
 });

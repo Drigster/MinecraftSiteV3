@@ -28,6 +28,7 @@
     "jwt-express": "^1.1.0",
     "luxon": "^3.2.1",
     "nunjucks": "^3.2.3",
+    "skinview3d": "^3.0.0-alpha.1",
     "surrealdb.js": "^0.5.0",
     "uuid": "^9.0.0"
   },
