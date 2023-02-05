@@ -4,12 +4,13 @@ import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import jwt from 'jwt-express';
+import { DateTime } from 'luxon';
 
 import { initDB } from "./database/surreal.js";
 import FlashMessages from './middleware/NunjucksGlobals.js';
 import authRouter from "./routers/authRouter.js";
 import apiRouter from "./routers/apiRouter.js";
-import { DateTime } from 'luxon';
+import skinRouter from "./routers/skinRouter.js";
 
 const app = express();
 dotenv.config();
@@ -54,6 +55,8 @@ app.get("/", (req, res) => {
 
 app.use("/", authRouter);
 app.use("/", apiRouter);
+app.use("/", skinRouter);
+
 app.listen(process.env.PORT, () => {
   	console.log(`Example app running on http://localhost:${process.env.PORT}`);
 });

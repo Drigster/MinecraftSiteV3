@@ -1,6 +1,5 @@
 import Surreal from "surrealdb.js";
 import dotenv from 'dotenv';
-import { v4 as uuid } from 'uuid';
 import bcrypt from "bcrypt";
 
 dotenv.config();
@@ -47,7 +46,7 @@ export async function initDB() {
         const users = await db.select("user");
         if(users.length == 0){
             await db.create("user", {
-                uuid: uuid(),
+                uuid: "7943cf5b-6d20-462a-9eac-d5dc70d2456a",
                 username: "admin",
                 password: await bcrypt.hashSync("admin", 10),
                 email: "test@test.test",
