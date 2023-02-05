@@ -7,7 +7,7 @@
     "db": "surreal start --bind 127.0.0.1:8001 --log debug --user root --pass root file://\"./database/storage/\"",
     "dev": "npx nodemon",
     "tailwind": "npx tailwindcss -i ./src/css/tailwind.css -o ./public/css/style.css --watch",
-    "livereload": "npx livereload . -w 1000 -d"
+    "livereload": "npx livereload . -ee njk"
   },
   "type": "module",
   "repository": {
