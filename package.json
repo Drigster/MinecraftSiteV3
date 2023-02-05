@@ -6,7 +6,8 @@
   "scripts": {
     "db": "surreal start --bind 127.0.0.1:8001 --log debug --user root --pass root file://\"./database/storage/\"",
     "dev": "npx nodemon",
-    "tailwind": "npx tailwindcss -i ./src/css/tailwind.css -o ./public/css/style.css --watch"
+    "tailwind": "npx tailwindcss -i ./src/css/tailwind.css -o ./public/css/style.css --watch",
+    "livereload": "npx livereload . -w 1000 -d"
   },
   "type": "module",
   "repository": {
@@ -33,6 +34,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "livereload": "^0.9.3",
     "nodemon": "^2.0.20",
     "tailwindcss": "^3.2.4"
   }
