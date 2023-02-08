@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link href="/css/style.css" rel="stylesheet">
+		<title>
+            {% if error.status %}
+                {{ error.status }} - DicePVP
+            {% else %}
+                404 - DicePVP
+            {% endif %}
+        </title>
+        <style>
+            body {
+                background-image: url("../img/error.jpg");
+            }
+        </style>
+	</head>
+	<body>
+        <div class="flex flex-col items-center justify-center h-full w-full">
+            <span class="text-[14rem] leading-[0.8] text-foxy-orange">
+                {% if error.status %}
+                    {{ error.status }}
+                {% else %}
+                    404
+                {% endif %}
+            </span>
+            <p class="text-3xl text-foxy-blue">
+                {% if error.message %}
+                    {{ error.message }}
+                {% else %}
+                    Похоже тут ничего нету...
+                {% endif %}
+            </p>
+            <a class="pt-4" href="/"><button class="!bg-transparent">Вернутся на главную</button></a>
+        </div>
+	</body>
+</html>

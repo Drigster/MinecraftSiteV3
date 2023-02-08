@@ -62,6 +62,10 @@ app.use("/", apiRouter);
 app.use("/", skinRouter);
 app.use("/", changeRouter);
 
+app.get("*", (req, res) => {
+	res.render("error")
+});
+
 app.listen(process.env.PORT, () => {
   	console.log(`Example app running on http://localhost:${process.env.PORT}`);
 });
