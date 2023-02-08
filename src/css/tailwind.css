@@ -109,10 +109,9 @@
     }
     
     input[type=file]::file-selector-button {
-        background-color: rgba(0,0,0,0.25);
+        background-color: #101010 !important;
         @apply text-foxy-orange;
-        border: unset;
-        @apply border-r;
+        @apply border-none;
         @apply border-foxy-orange;
     }
 

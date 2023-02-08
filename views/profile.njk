@@ -10,21 +10,6 @@
 			<div class="w-full h-full">
 				<canvas class="border-2 border-foxy-orange rounded-xl" id="skin_container"></canvas>
 			</div>
-			{#<div>
-				<div class="relative">
-					<h4>Скин</h4>
-					<label>Размер скина должен быть 64x64</label><br />
-					<input onChange={fileSelectedHandler} type="file" name="skin" />
-				</div>
-				<div class="relative">
-					<h4>Плащ</h4>
-					<label></label><br />
-					<input type="file" name="skin" />
-					<Disabled>
-						<h5>Недоступно...</h5>
-					</Disabled>
-				</div>
-			</div>#}
 		</div>
 		<div class="col-span-12 xl:col-span-9 md:col-span-8 ">
 			<table class="userTable">
@@ -58,45 +43,14 @@
 				</tr>
 				<tr>
 					<td>Cкин</td>
-					<td><a class="link" href="">Сбросить</a></td>
+					<td><label class="link pl-2 text-xs" for="skin-modal">Изменить</label></td>
 				</tr>
 				<tr>
 					<td>Плащ</td>
-					<td><a class="link" href="">Сбросить</a></td>
+					<td>{# <label class="link pl-2 text-xs" for="cape-modal">Изменить</label> #}</td>
 				</tr>
 			</table>
-			{#<div>
-				<span>
-					<button onClick={show}>Сменить ник</button>
-					<Change header="Сменить ник" fieldText="Никнейм" fieldName="username" />
-				</span>
-				<span>
-					<button onClick={show}>Сменить почту</button>
-					<Change header="Сменить почту" fieldText="Почта" fieldName="email" />
-				</span>
-				<span>
-					<button>Сменить пароль</button>
-					<Change header="Сменить пароль" fieldText="Новый пароль" fieldName="password" />
-				</span>
-			</div>#}
 		</div>
-		{#<div class="col-span-12">
-			<h4>Активность за 30 дней</h4>
-			<div>
-				<table>
-					<thead>
-						<tr>
-							<td>IP аддрес</td>
-							<td>Дата</td>
-							<td>Тип</td>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
-				<h5>Недоступно...</h5>
-			</div>
-		</div>#}
 	</div>
 </div>
 {% endblock %}
@@ -129,9 +83,11 @@
 			};
 		}
 	</script>
-	{{ macros.modal("username-modal", "Сменить никнейм", "Никнейм", "newusername", "/api/change/username") }}
-	{{ macros.modal("email-modal", "Сменить почту", "Почта", "newemail", "/api/change/email") }}
-	{{ macros.modal("password-modal", "Сменить пароль", "Новый пароль", "newpassword", "/api/change/password") }}
+	{{ macros.change_modal("username-modal", "Сменить никнейм", "Никнейм", "newusername", "/api/change/username") }}
+	{{ macros.change_modal("email-modal", "Сменить почту", "Почта", "newemail", "/api/change/email") }}
+	{{ macros.change_modal("password-modal", "Сменить пароль", "Новый пароль", "newpassword", "/api/change/password") }}
+	{{ macros.skin_modal("skin-modal", "Скин", "skin", "/api/upload/skin") }}
+	{{ macros.skin_modal("cape-modal", "Плащь", "cape", "/api/upload/cape") }}
 	{% if error %}
 		{{ macros.toast_error(error) }}
 	{% endif %}

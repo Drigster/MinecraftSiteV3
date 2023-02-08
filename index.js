@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import jwt from 'jwt-express';
 import { DateTime } from 'luxon';
+import fileUpload from 'express-fileupload';
 
 import { initDB } from "./database/surreal.js";
 import FlashMessages from './middleware/NunjucksGlobals.js';
@@ -24,6 +25,7 @@ app.set('view engine', 'njk');
 app.use(express.static('./public'))
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(fileUpload());
 app.use(session({
   	secret: process.env.SESSION_SECRET,
 	resave: false,
