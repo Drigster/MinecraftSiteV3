@@ -1,0 +1,32 @@
+{% macro modal(id, titleText, changeText, changeName) %}
+<input type="checkbox" id="{{ id }}" class="modal-toggle" />
+<div class="modal" id="{{ id }}">
+    <div class="w-full max-w-md p-8 bg-black rounded-2xl relative modal-box">
+        <label for="{{ id }}" class="text-foxy-orange absolute right-3 top-3 cursor-pointer text-xl">✕</label>
+        <div>
+            <h2 class="text-center text-3xl font-bold tracking-tight text-foxy-orange">{{ titleText }}</h2>
+        </div>
+        <form class="mt-8" action="" method="POST">
+            <div class="rounded-md shadow-sm">
+                <div>
+                    <label for="{{ changeName }}" class="sr-only">{{ changeText }}</label>
+                    <input id="{{ changeName }}" name="{{ changeName }}" type="text" required
+                        class="relative block w-full py-2"
+                        placeholder="{{ changeText }}">
+                </div>
+                <div>
+                    <label for="password" class="sr-only">Пароль</label>
+                    <input id="password" name="password" type="password" required
+                        class="relative block w-full py-2"
+                        placeholder="Пароль">
+                </div>
+            </div>
+            <div>
+                <button type="submit" class="group relative flex w-full mt-4 justify-center">
+                    Сменить
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endmacro %}

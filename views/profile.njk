@@ -1,4 +1,5 @@
 {% extends "base.njk" %}
+{% import "./partials/macros.njk" as macros %}
 
 {% block title %}Hello World{% endblock %}
 <div></div>
@@ -29,11 +30,11 @@
 			<table class="userTable">
 				<tr>
 					<td>Никнейм</td>
-					<td id="nickname">{{ user.username }}<a class="link pl-2 text-xs" href="">Сменить</a></td>
+					<td id="nickname">{{ user.username }}<label class="link pl-2 text-xs" for="username-modal">Сменить</label></td>
 				</tr>
 				<tr>
 					<td>Почта</td>
-					<td>{{ user.email }}<a class="link pl-2 text-xs" href="">Сменить</a></td>
+					<td>{{ user.email }}<label class="link pl-2 text-xs" for="email-modal">Сменить</label></td>
 				</tr>
 				<tr>
 					<td>Статус аккаунта</td>
@@ -53,7 +54,7 @@
 				</tr>
 				<tr>
 					<td>Пароль</td>
-					<td>●●●●●●●●<a class="link pl-2 text-xs" href="">Сменить</a></td>
+					<td>●●●●●●●●<label class="link pl-2 text-xs" for="password-modal">Сменить</label></td>
 				</tr>
 				<tr>
 					<td>Cкин</td>
@@ -128,4 +129,7 @@
 			};
 		}
 	</script>
+	{{ macros.modal("username-modal", "Сменить никнейм", "Никнейм", "newusername") }}
+	{{ macros.modal("email-modal", "Сменить почту", "Почта", "newemail") }}
+	{{ macros.modal("password-modal", "Сменить пароль", "Новый пароль", "newpassword") }}
 {% endblock %}

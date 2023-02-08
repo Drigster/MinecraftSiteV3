@@ -13,8 +13,12 @@ const db = new Surreal(db_url);
 db.queryFirst = queryFirst;
 
 async function queryFirst(queryString) {
-    const query = await db.query(queryString);
-    return query[0].result[0];
+    try {
+        const query = await db.query(queryString);
+        return query[0].result[0];
+    } catch {
+        return {}
+    }
 }
 
 export async function initDB() {
