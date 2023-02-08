@@ -39,9 +39,9 @@
 				<tr>
 					<td>Статус аккаунта</td>
 					{% if user.verified %}
-						<td class="text-green-500">Верефицирован</td>
+						<td class="text-green-500">Верифицирован</td>
 					{% else %}
-						<td class="text-yellow-400">Не верефицирован</td>
+						<td class="text-yellow-400">Не верифицирован</td>
 					{% endif %}
 				</tr>
 				<tr>
@@ -129,7 +129,13 @@
 			};
 		}
 	</script>
-	{{ macros.modal("username-modal", "Сменить никнейм", "Никнейм", "newusername") }}
-	{{ macros.modal("email-modal", "Сменить почту", "Почта", "newemail") }}
-	{{ macros.modal("password-modal", "Сменить пароль", "Новый пароль", "newpassword") }}
+	{{ macros.modal("username-modal", "Сменить никнейм", "Никнейм", "newusername", "/api/change/username") }}
+	{{ macros.modal("email-modal", "Сменить почту", "Почта", "newemail", "/api/change/email") }}
+	{{ macros.modal("password-modal", "Сменить пароль", "Новый пароль", "newpassword", "/api/change/password") }}
+	{% if error %}
+		{{ macros.toast_error(error) }}
+	{% endif %}
+	{% if message %}
+		{{ macros.toast_info(message) }}
+	{% endif %}
 {% endblock %}

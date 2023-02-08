@@ -13,7 +13,6 @@ var fileSendOptions = {
     root: path.resolve(__dirname, "..", "public")
 }
 
-// authorizeUrl
 router.get("/api/skin/:uuid", async (req, res) => {
     const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.params.uuid}" OR username = "${req.params.uuid}"`);
     if (user) {

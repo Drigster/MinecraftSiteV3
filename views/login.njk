@@ -40,3 +40,8 @@
 	</div>
 </div>
 {% endblock %}
+{% block script %}
+	{% if error %}
+		{{ macros.toast_error(error) }}
+	{% endif %}
+{% endblock %}

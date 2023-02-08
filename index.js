@@ -11,6 +11,8 @@ import FlashMessages from './middleware/NunjucksGlobals.js';
 import authRouter from "./routers/authRouter.js";
 import apiRouter from "./routers/apiRouter.js";
 import skinRouter from "./routers/skinRouter.js";
+import changeRouter from "./routers/changeRouter.js";
+
 
 const app = express();
 dotenv.config();
@@ -56,6 +58,7 @@ app.get("/", (req, res) => {
 app.use("/", authRouter);
 app.use("/", apiRouter);
 app.use("/", skinRouter);
+app.use("/", changeRouter);
 
 app.listen(process.env.PORT, () => {
   	console.log(`Example app running on http://localhost:${process.env.PORT}`);

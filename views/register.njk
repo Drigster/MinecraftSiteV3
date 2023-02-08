@@ -9,15 +9,6 @@
 			<h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-foxy-orange">Регистрация</h2>
 		</div>
 		<form class="mt-8" action="" method="POST">
-			{% if error %}
-				<div class="flex items-center justify-center text-center my-4">
-					<div class="text-sm">
-						<p class="text-center text-sm text-red-900">
-							{{ error }}
-						</p>
-					</div>
-				</div>
-			{% endif %}
 			<div class="-space-y-px rounded-md shadow-sm">
 				<div>
 					<label for="username" class="sr-only">Никнейм</label>
@@ -60,4 +51,9 @@
 		</form>
 	</div>
 </div>
+{% endblock %}
+{% block script %}
+	{% if error %}
+		{{ macros.toast_error(error) }}
+	{% endif %}
 {% endblock %}
