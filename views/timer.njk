@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link href="/css/style.css" rel="stylesheet">
+		<title>
+            ?????? - DicePVP
+        </title>
+        <style>
+            body {
+                background-image: url("../img/error.jpg");
+            }
+        </style>
+	</head>
+	<body>
+        <div class="flex flex-col items-center justify-center h-full w-full text-foxy-orange">
+            <span class="countdown font-mono text-7xl">
+                <span id="days" style="--value:{{ day }};"></span>:
+                <span id="hours" style="--value:{{ hour }};"></span>:
+                <span id="min" style="--value:{{ minute }};"></span>:
+                <span id="sec" style="--value:{{ second }};"></span>
+            </span>
+            <div class="hidden text-xl" id="text">  
+                Something happened...
+            </div>
+        </div>
+        <script>
+            let dayValue = 0;
+            let hourValue = 0;
+            let minValue = 0;
+            let secValue = 1;
+            let count = setInterval(() => {
+                let day = document.getElementById("days");
+                let hour = document.getElementById("hours");
+                let min = document.getElementById("min");
+                let sec = document.getElementById("sec");
+
+                let dayStyle = getComputedStyle(day);
+                let hourStyle = getComputedStyle(hour);
+                let minStyle = getComputedStyle(min);
+                let secStyle = getComputedStyle(sec);
+
+                dayValue = dayStyle.getPropertyValue("--value")
+                hourValue = hourStyle.getPropertyValue("--value")
+                minValue = minStyle.getPropertyValue("--value")
+                secValue = secStyle.getPropertyValue("--value")
+
+                sec.style.setProperty('--value', --secValue);
+
+                if(dayValue <= 0 && hourValue <= 0 && minValue <= 0 && secValue <= 0){
+                    clearTimeout(count);
+                }
+                else if(secValue <= 0){
+                    console.log("zero")
+                    sec.style.setProperty('--value', 59);
+                    min.style.setProperty('--value', --minValue);
+                    if(minValue = 0){
+                        min.style.setProperty('--value', 59);
+                        hour.style.setProperty('--value', --hourValue);
+                        if(hourValue = 0){
+                            hour.style.setProperty('--value', 59);
+                            day.style.setProperty('--value', --dayValue);
+                        }
+                    }
+                }
+
+                if(dayValue == 0 && hourValue == 0 && minValue == 0 && secValue == 0){
+                    setTimeout(() => {
+                            let count = document.getElementById("text");
+                            let text = document.getElementById("text");
+                            text.style.display = "inline-block";
+                    }, 1000);
+                }
+            }, 1000)
+        </script>
+	</body>
+</html>

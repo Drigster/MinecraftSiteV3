@@ -9,11 +9,11 @@ import fileUpload from 'express-fileupload';
 
 import { initDB } from "./database/surreal.js";
 import FlashMessages from './middleware/NunjucksGlobals.js';
+import Timer from './middleware/timer.js';
 import authRouter from "./routers/authRouter.js";
 import apiRouter from "./routers/apiRouter.js";
 import skinRouter from "./routers/skinRouter.js";
 import changeRouter from "./routers/changeRouter.js";
-
 
 const app = express();
 dotenv.config();
@@ -51,8 +51,10 @@ env.addFilter('dateString', function(str) {
     return date.setLocale('ru').toLocaleString(DateTime.DATETIME_SHORT);
 });
 
-app.use(FlashMessages);
+app.use(Timer);
 
+app.use(FlashMessages);
+	
 app.get("/", (req, res) => {
 	res.render("index");
 });
