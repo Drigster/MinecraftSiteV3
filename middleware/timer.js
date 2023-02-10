@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export default (req, res, next) => {
-    console.log(process.env.NODE_ENV);
     if(process.env.NODE_ENV === "development"){
         next();
     }

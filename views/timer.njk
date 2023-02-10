@@ -7,7 +7,12 @@
         </title>
         <style>
             body {
+                background-color: #404040;
                 background-image: url("../img/error.jpg");
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-position: center, top;
+                background-attachment: fixed;
             }
         </style>
 	</head>
@@ -53,10 +58,10 @@
                     console.log("zero")
                     sec.style.setProperty('--value', 59);
                     min.style.setProperty('--value', --minValue);
-                    if(minValue = 0){
+                    if(minValue <= 0){
                         min.style.setProperty('--value', 59);
                         hour.style.setProperty('--value', --hourValue);
-                        if(hourValue = 0){
+                        if(hourValue <= 0){
                             hour.style.setProperty('--value', 59);
                             day.style.setProperty('--value', --dayValue);
                         }
