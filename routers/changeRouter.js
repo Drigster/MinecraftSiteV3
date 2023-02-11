@@ -1,7 +1,7 @@
 import express from "express";
 import db from "../database/surreal.js";
 import bcrypt from "bcrypt";
-import jwt from 'jwt-express';
+import { sendVerificationToken } from "../utils/utils.js";
 
 const router = express.Router();
 
@@ -69,6 +69,7 @@ router.post("/api/change/email", async (req, res) => {
             });
             req.session.success = "Почта успешно изменена.";
             req.session.message = "На почту отправлена ссылка для верицикации";
+            sendVerificationToken(newUser.email);
         }
         req.session.save();
     }

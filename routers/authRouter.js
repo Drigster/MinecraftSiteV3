@@ -5,6 +5,7 @@ import jwt from 'jwt-express';
 import { SkinViewer } from "skinview3d";
 
 import db from "../database/surreal.js";
+import { sendVerificationToken, verifyVerificationToken } from "../utils/utils.js";
 
 const router = express.Router();
 
@@ -52,6 +53,7 @@ router.post("/register", async (req, res) => {
                 lastPlayed: -1
             }
         });
+        sendVerificationToken(req.body.email);
         return res.redirect("login");
     }
     req.session.save();
@@ -105,6 +107,30 @@ router.get("/admin", async (req, res) => {
     }
     if(!req.jwt.payload.user.permissions.includes("admin")){
         return res.render("error", { error: { status: 418, message: "I'm a Teapot" } });
+    }
+    const users = await db.select("user");
+    res.render("admin", { users });
+});
+
+router.get("/verify/:token", async (req, res) => {
+    const verifyToken = verifyVerificationToken(req.params.token);
+    if(!verifyToken){
+        return res.render("error", { error: { status: 111, message: "Token is not valid" } });
+    }
+    else{
+        const user = await db.queryFirst(`SELECT * FROM user WHERE email = "${verifyToken.email}"`);
+        if(user){
+            const newUser = await db.change(user.id, {
+                verified: true
+            })
+            res.jwt({
+                user: newUser
+            });
+            return res.render("error", { error: { status: 111, message: "Verified" + verifyToken.email } });
+        }
+        else{
+            return res.render("error", { error: { status: 111, message: "User not found" } });
+        }
     }
     const users = await db.select("user");
     res.render("admin", { users });

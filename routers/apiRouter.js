@@ -12,27 +12,32 @@ router.post("/api/auth/authorize", async (req, res) => {
     const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.login}"`);
     if (user) {
         if (await bcrypt.compare(req.body.password.password, user.password)) {
-            if (user.session) {
-                await db.query(`DELETE session WHERE user.id = ${user.id}`)
+            if(user.verified){
+                if (user.session) {
+                    await db.query(`DELETE session WHERE user.id = ${user.id}`)
+                }
+                const token = getRandomString(16);
+                const session = await db.create("session", {
+                    token: `${token}`,
+                    user: `${user.id}`,
+                    expires: (Date.now() + 60 * 60 * 1000)
+                });
+                await db.change(`${user.id}`, {
+                    session: `${session.id}`
+                });
+                const HttpUserSession = await fetch(`${process.env.BASE_URL}/api/user/token/${session.token}`);
+                const AuthReport = {
+                    "minecraftAccessToken": session.token,
+                    "oauthAccessToken": session.token,
+                    "oauthRefreshToken": 0,
+                    "oauthExpire": 0,
+                    "session": await HttpUserSession.json()
+                };
+                res.status(200).json(AuthReport);
             }
-            const token = getRandomString(16);
-            const session = await db.create("session", {
-                token: `${token}`,
-                user: `${user.id}`,
-                expires: (Date.now() + 60 * 60 * 1000)
-            });
-            await db.change(`${user.id}`, {
-                session: `${session.id}`
-            });
-            const HttpUserSession = await fetch(`${process.env.BASE_URL}/api/user/token/${session.token}`);
-            const AuthReport = {
-                "minecraftAccessToken": session.token,
-                "oauthAccessToken": session.token,
-                "oauthRefreshToken": 0,
-                "oauthExpire": 0,
-                "session": await HttpUserSession.json()
-            };
-            res.status(200).json(AuthReport);
+            else {
+                res.status(200).json({ error: "auth.require2fa" });
+            }
         }
         else {
             res.status(200).json({ error: "auth.wrongpassword" });
