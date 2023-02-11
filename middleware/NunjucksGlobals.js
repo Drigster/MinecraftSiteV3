@@ -9,6 +9,7 @@ export default (req, res, next) => {
             req.app.settings.nunjucksEnv.addGlobal("user", null);
         }
         req.session.error = null;
+        req.session.message = null;
         req.session.save();
     }
     next();
