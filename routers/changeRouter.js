@@ -32,7 +32,7 @@ router.post("/api/change/username", async (req, res) => {
             res.jwt({
                 user: newUser
             });
-            req.session.message = "Никнейм успешно изменён";
+            req.session.success = "Никнейм успешно изменён";
         }
         req.session.save();
     }
@@ -67,7 +67,8 @@ router.post("/api/change/email", async (req, res) => {
             res.jwt({
                 user: newUser
             });
-            req.session.message = "Почта успешно изменена";
+            req.session.success = "Почта успешно изменена.";
+            req.session.message = "На почту отправлена ссылка для верицикации";
         }
         req.session.save();
     }
@@ -96,7 +97,7 @@ router.post("/api/change/password", async (req, res) => {
             res.jwt({
                 user: newUser
             });
-            req.session.message = "Пароль успешно изменён";
+            req.session.success = "Пароль успешно изменён";
         }
         req.session.save();
     }

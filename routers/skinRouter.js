@@ -58,7 +58,7 @@ router.post("/api/upload/skin", async (req, res) => {
                     req.session.error = "Ошибка сервера, попробуйте позже!";
                 }
     
-                req.session.message = "Скин успешно изменён";
+                req.session.success = "Скин успешно изменён";
                 
                 Jimp.read(filePath, (err, skin) => {
                     if (err) {
@@ -97,7 +97,7 @@ router.post("/api/delete/skin", async (req, res) => {
                     req.session.error = "Ошибка сервера, попробуйте позже!";
                 }
                 
-                req.session.message = "Скин успешно изменён";
+                req.session.success = "Скин успешно изменён";
                 
                 Jimp.read(filePath, (err, skin) => {
                     if (err) {
