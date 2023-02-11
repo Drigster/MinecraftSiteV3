@@ -1,0 +1,24 @@
+{% extends "base.njk" %}
+{% import "./partials/macros.njk" as macros %}
+
+{% block title %}Админка{% endblock %}
+{% block content %}
+	<div class="lg:mx-12 mx-4 2xl:container h-auto content">
+		<table class="table table-compact w-full">
+			<tr>
+				<th>Username</th>
+				<th>Email</th>
+				<th>Verified</th>
+				<th>Last Played</th>
+			</tr>
+			{% for user in users %}
+				<tr>
+					<td>{{ user.username }}</td>
+					<td>{{ user.email }}</td>
+					<td>{{ user.verified }}</td>
+					<td>{{ user.info.lastPlayed }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+{% endblock %}

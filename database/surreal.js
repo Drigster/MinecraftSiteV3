@@ -11,11 +11,21 @@ let db_pass = process.env.DATABASE_PASSWORD;
 const db = new Surreal(db_url);
 
 db.queryFirst = queryFirst;
+db.queryAll = queryAll;
 
 async function queryFirst(queryString) {
     try {
         const query = await db.query(queryString);
         return query[0].result[0];
+    } catch {
+        return {}
+    }
+}
+
+async function queryAll(queryString) {
+    try {
+        const query = await db.query(queryString);
+        return query[0].result;
     } catch {
         return {}
     }

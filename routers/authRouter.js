@@ -99,4 +99,15 @@ router.get("/logout", (req, res) => {
     res.redirect("/");
 });
 
+router.get("/admin", async (req, res) => {
+    if(!req.jwt.valid){
+        return res.render("error");
+    }
+    if(!req.jwt.payload.user.permissions.includes("admin")){
+        return res.render("error", { error: { status: 418, message: "I'm a Teapot" } });
+    }
+    const users = await db.select("user");
+    res.render("admin", { users });
+});
+
 export default router;
