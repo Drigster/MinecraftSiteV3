@@ -8,7 +8,6 @@ import { DateTime } from 'luxon';
 import fileUpload from 'express-fileupload';
 
 import { initDB } from "./database/surreal.js";
-import { createVerificationToken, sendVerificationToken, verifyVerificationToken } from './utils/utils.js';
 
 import FlashMessages from './middleware/NunjucksGlobals.js';
 import Timer from './middleware/timer.js';
