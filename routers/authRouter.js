@@ -53,7 +53,7 @@ router.post("/register", async (req, res) => {
                 lastPlayed: -1
             }
         });
-        sendVerificationToken(req.body.email);
+        sendVerificationToken(req.body.email, "verify");
         return res.redirect("login");
     }
     req.session.save();

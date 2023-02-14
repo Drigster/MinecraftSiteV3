@@ -69,7 +69,7 @@ router.post("/api/change/email", async (req, res) => {
             });
             req.session.success = "Почта успешно изменена.";
             req.session.message = "На почту отправлена ссылка для верицикации";
-            sendVerificationToken(newUser.email);
+            sendVerificationToken(newUser.email, "verify");
         }
         req.session.save();
     }
