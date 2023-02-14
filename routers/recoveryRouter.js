@@ -2,7 +2,7 @@ import express from "express";
 import db from "../database/surreal.js";
 import bcrypt from "bcrypt";
 import jwt from 'jwt-express';
-import { sendVerificationToken, verifyVerificationToken } from "../utils/utils.js";
+import { sendUsername, sendVerificationToken, verifyVerificationToken } from "../utils/utils.js";
 
 const router = express.Router();
 
@@ -21,7 +21,7 @@ router.post("/recovery", async (req, res) => {
         return res.render("info", { title: "Востановление пароль", message: "Для продолжения перейдите по ссылке отправленой вам на почту" });
     }
     else if(req.body.username != undefined){
-        console.log(user.username);
+        sendUsername(req.body.email);
         return res.render("info", { title: "Востановление никнейма", message: "Вам на почту было отправлено письмо с вашим никнеймом" });
     }
     else{

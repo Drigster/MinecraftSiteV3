@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
+import db from "../database/surreal.js";
 
 dotenv.config();
 
@@ -55,7 +56,6 @@ export function verifyVerificationToken(token) {
 }
 
 export async function sendVerificationToken(email, route) {
-
     const token = createVerificationToken(email);
 
     let info = await transporter.sendMail({
@@ -63,6 +63,21 @@ export async function sendVerificationToken(email, route) {
         to: email,
         subject: "Verify your account!",
         html: `<a href='${process.env.BASE_URL}/${route}/${token}'>Hello world?</a>`
+    });
+
+    if(process.env.NODE_ENV === "development"){
+        console.log('Preview URL: ' + nodemailer.getTestMessageUrl(info));
+    }
+}
+
+export async function sendUsername(email) {
+    const user = await db.queryFirst(`SELECT * FROM user WHERE email = "${email}"`);
+
+    let info = await transporter.sendMail({
+        from: '"DicePVP" <auth@disepvp.ee>',
+        to: email,
+        subject: "Verify your account!",
+        html: `${user.username}`
     });
 
     if(process.env.NODE_ENV === "development"){
