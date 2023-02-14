@@ -16,6 +16,7 @@ import authRouter from "./routers/authRouter.js";
 import apiRouter from "./routers/apiRouter.js";
 import skinRouter from "./routers/skinRouter.js";
 import changeRouter from "./routers/changeRouter.js";
+import recoveryRouter from "./routers/recoveryRouter.js";
 
 const app = express();
 dotenv.config();
@@ -65,6 +66,7 @@ app.use("/", authRouter);
 app.use("/", apiRouter);
 app.use("/", skinRouter);
 app.use("/", changeRouter);
+app.use("/", recoveryRouter);
 
 app.get("*", (req, res) => {
 	res.render("error")

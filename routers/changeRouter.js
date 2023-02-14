@@ -76,33 +76,4 @@ router.post("/api/change/email", async (req, res) => {
     return res.redirect("/profile");
 });
 
-router.post("/api/change/password", async (req, res) => {
-    if(!req.jwt.payload.user.uuid){
-        return res.redirect("/logout");
-    }
-
-    const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.jwt.payload.user.uuid}"`);
-    if(user){
-        if(req.body.newpassword.length < 6){
-            req.session.error = "Новый пароль слишком короткий(минимум: 6)!";
-        }
-        else if(!(await bcrypt.compare(req.body.password, user.password))){
-            req.session.error = "Пароль не верен!";
-        }
-        else{
-            let newUser = await db.change(user.id, {
-                password: await bcrypt.hash(req.body.newpassword, 10)
-            })
-            delete newUser.password;
-            delete newUser.id;
-            res.jwt({
-                user: newUser
-            });
-            req.session.success = "Пароль успешно изменён";
-        }
-        req.session.save();
-    }
-    return res.redirect("/profile");
-});
-
 export default router;

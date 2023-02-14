@@ -1,0 +1,38 @@
+{% extends "base.njk" %}
+
+{% block title %}Востановление{% endblock %}
+
+{% block content %}
+<div class="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+	<div class="w-full max-w-md space-y-8 bg-bg p-8 rounded-2xl">
+		<div>
+			<h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-foxy-orange">Востановление</h2>
+		</div>
+		<form class="mt-8" action="" method="POST">
+			<div class="rounded-md shadow-sm">
+				<div>
+					<label for="email" class="sr-only">Почта</label>
+					<input id="email" name="email" type="text" required
+						class="relative block w-full py-2"
+						placeholder="Почта">
+				</div>
+			</div>
+			<div>
+				<button type="submit" name="password" class="group relative flex w-full justify-center">
+					Востановить пароль
+				</button>
+			</div>
+			<div>
+				<button type="submit" name="username" class="group relative flex w-full justify-center">
+					Забыл никнейм
+				</button>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}
+{% block alert %}
+	{% if error %}
+		{{ macros.alert_error(error) }}
+	{% endif %}
+{% endblock %}

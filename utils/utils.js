@@ -54,7 +54,7 @@ export function verifyVerificationToken(token) {
     }
 }
 
-export async function sendVerificationToken(email) {
+export async function sendVerificationToken(email, route) {
 
     const token = createVerificationToken(email);
 
@@ -62,7 +62,7 @@ export async function sendVerificationToken(email) {
         from: '"DicePVP" <auth@disepvp.ee>',
         to: email,
         subject: "Verify your account!",
-        html: `<a href='${process.env.BASE_URL}/verify/${token}'>Hello world?</a>`
+        html: `<a href='${process.env.BASE_URL}/${route}/${token}'>Hello world?</a>`
     });
 
     if(process.env.NODE_ENV === "development"){

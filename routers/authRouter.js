@@ -115,7 +115,7 @@ router.get("/admin", async (req, res) => {
 router.get("/verify/:token", async (req, res) => {
     const verifyToken = verifyVerificationToken(req.params.token);
     if(!verifyToken){
-        return res.render("verify", { message: "Token is not valid" });
+        return res.render("info", { title: "Ошибка!", message: "Токен истёк или не верен. Попробуйте повторить верефикацию." });
     }
     else{
         const user = await db.queryFirst(`SELECT * FROM user WHERE email = "${verifyToken.email}"`);
@@ -126,10 +126,10 @@ router.get("/verify/:token", async (req, res) => {
             res.jwt({
                 user: newUser
             });
-            return res.render("verify", { message: "Почта верифицирована" });
+            return res.render("info", { title: "Почта верифицирована", message: "Тепепь вы можете играть на сервере" });
         }
         else{
-            return res.render("verify", { message: "User not found" });
+            return res.render("info", { title: "Пользователь не найден", message: "Возможно изменилась почта?" });
         }
     }
 });
