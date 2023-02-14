@@ -115,7 +115,7 @@ router.get("/admin", async (req, res) => {
 router.get("/verify/:token", async (req, res) => {
     const verifyToken = verifyVerificationToken(req.params.token);
     if(!verifyToken){
-        return res.render("error", { error: { status: 111, message: "Token is not valid" } });
+        return res.render("verify", { message: "Token is not valid" });
     }
     else{
         const user = await db.queryFirst(`SELECT * FROM user WHERE email = "${verifyToken.email}"`);
@@ -126,14 +126,12 @@ router.get("/verify/:token", async (req, res) => {
             res.jwt({
                 user: newUser
             });
-            return res.render("error", { error: { status: 111, message: "Verified" + verifyToken.email } });
+            return res.render("verify", { message: "Почта верифицирована" });
         }
         else{
-            return res.render("error", { error: { status: 111, message: "User not found" } });
+            return res.render("verify", { message: "User not found" });
         }
     }
-    const users = await db.select("user");
-    res.render("admin", { users });
 });
 
 export default router;

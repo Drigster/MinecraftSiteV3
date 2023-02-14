@@ -64,4 +64,8 @@ export async function sendVerificationToken(email) {
         subject: "Verify your account!",
         html: `<a href='${process.env.BASE_URL}/verify/${token}'>Hello world?</a>`
     });
+
+    if(process.env.NODE_ENV === "development"){
+        console.log('Preview URL: ' + nodemailer.getTestMessageUrl(info));
+    }
 }
