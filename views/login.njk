@@ -30,6 +30,12 @@
 						<a href="/register" class="font-medium link">Зарегистрироватся</a>
 					</p>
 				</div>
+				<div class="text-sm">
+					<p class="text-center text-sm">
+						Забыл пароль?
+						<a href="/recovery" class="font-medium link">Востановить</a>
+					</p>
+				</div>
 			</div>
 			<div>
 				<button type="submit" class="group relative flex w-full justify-center">
@@ -40,7 +46,7 @@
 	</div>
 </div>
 {% endblock %}
-{% block script %}
+{% block alert %}
 	{% if error %}
 		{{ macros.alert_error(error) }}
 	{% endif %}

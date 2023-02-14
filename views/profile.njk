@@ -88,15 +88,15 @@
 	{{ macros.change_modal("password-modal", "Сменить пароль", "Новый пароль", "newpassword", "/api/change/password") }}
 	{{ macros.skin_modal("skin-modal", "Скин", "skin", "/api/upload/skin") }}
 	{{ macros.skin_modal("cape-modal", "Плащь", "cape", "/api/upload/cape") }}
-	<div class="toast toast-top toast-end">
-		{% if error %}
-			{{ macros.alert_error(error) }}
-		{% endif %}
-		{% if success %}
-			{{ macros.alert_success(success) }}
-		{% endif %}
-		{% if message %}
-			{{ macros.alert_info(message) }}
-		{% endif %}
-	</div>
+{% endblock %}
+{% block alert %}	
+	{% if error %}
+		{{ macros.alert_error(error) }}
+	{% endif %}
+	{% if success %}
+		{{ macros.alert_success(success) }}
+	{% endif %}
+	{% if message %}
+		{{ macros.alert_info(message) }}
+	{% endif %}
 {% endblock %}

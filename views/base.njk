@@ -1,3 +1,5 @@
+{% import "./partials/macros.njk" as macros %}
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -10,8 +12,9 @@
 			{% include "./partials/nav.njk" %}
 			{% block content %}{% endblock %}
 		</div>
-		{% block script %}
-			
-		{% endblock %}
+		<div class="toast toast-top toast-end">
+			{% block alert %}{% endblock %}
+		</div>
+		{% block script %}{% endblock %}
 	</body>
 </html>
