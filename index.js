@@ -74,22 +74,28 @@ app.get("*", (req, res) => {
 	res.render("error")
 });
 
-var server;
+var httpServer;
+var httpsServer;
 if(process.env.NODE_ENV === "development"){
-	server = http.createServer(app);
+	httpServer = http.createServer(app);
 }
 else{
 	if(fs.existsSync('src/cert/server.key')){
 		var privateKey  = fs.readFileSync('src/cert/server.key', 'utf8');
 		var certificate = fs.readFileSync('src/cert/server.crt', 'utf8');
 		var credentials = {key: privateKey, cert: certificate};
-		server = https.createServer(credentials, app);
+		httpServer = https.createServer(credentials, app);
 	}
 	else{
 		console.log("Certificate not found, falling back to HTTP");
-		server = http.createServer(app);
+		httpServer = http.createServer(app);
 	}
 }
-server.listen(process.env.PORT, () => {
-  	console.log(`Server is running on http://localhost:${process.env.PORT}`);
+httpServer.listen(process.env.HTTP_PORT, () => {
+  	console.log(`Http server is running on http://localhost:${process.env.HTTP_PORT}`);
 });
+if(httpsServer){
+	httpsServer.listen(process.env.HTTPS_PORT, () => {
+		console.log(`Https server is running on port: ${process.env.HTTPS_PORT}`);
+  	});
+}
