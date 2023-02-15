@@ -6,6 +6,9 @@ import dotenv from 'dotenv';
 import jwt from 'jwt-express';
 import { DateTime } from 'luxon';
 import fileUpload from 'express-fileupload';
+import fs from "fs";
+import http from "http";
+import https from "https";
 
 import { initDB } from "./database/surreal.js";
 
@@ -71,6 +74,22 @@ app.get("*", (req, res) => {
 	res.render("error")
 });
 
-app.listen(process.env.PORT, () => {
-  	console.log(`Example app running on http://localhost:${process.env.PORT}`);
+var server;
+if(process.env.NODE_ENV === "development"){
+	server = http.createServer(app);
+}
+else{
+	if(fs.existsSync('src/cert/server.key')){
+		var privateKey  = fs.readFileSync('src/cert/server.key', 'utf8');
+		var certificate = fs.readFileSync('src/cert/server.crt', 'utf8');
+		var credentials = {key: privateKey, cert: certificate};
+		server = https.createServer(credentials, app);
+	}
+	else{
+		console.log("Certificate not found, falling back to HTTP");
+		server = http.createServer(app);
+	}
+}
+server.listen(process.env.PORT, () => {
+  	console.log(`Server is running on http://localhost:${process.env.PORT}`);
 });
