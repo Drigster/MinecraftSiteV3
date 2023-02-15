@@ -81,8 +81,8 @@ if(process.env.NODE_ENV === "development"){
 }
 else{
 	if(fs.existsSync('src/cert/privkey.key')){
-		var privateKey  = fs.readFileSync('src/cert/privkey.key', 'utf8');
-		var certificate = fs.readFileSync('src/cert/cert.crt', 'utf8');
+		var privateKey  = fs.readFileSync('src/cert/privkey.pem', 'utf8');
+		var certificate = fs.readFileSync('src/cert/cert.pem', 'utf8');
 		var credentials = {key: privateKey, cert: certificate};
 		httpServer = https.createServer(credentials, app);
 	}
