@@ -30,6 +30,7 @@
             </div>
         </div>
         <script>
+
             let dayValue = 0;
             let hourValue = 0;
             let minValue = 0;
@@ -50,25 +51,25 @@
                 minValue = minStyle.getPropertyValue("--value")
                 secValue = secStyle.getPropertyValue("--value")
 
-                sec.style.setProperty('--value', --secValue);
+                var vars = [parseInt(secValue), parseInt(minValue), parseInt(hourValue), parseInt(dayValue)];
 
-                if(dayValue <= 0 && hourValue <= 0 && minValue <= 0 && secValue <= 0){
-                    clearTimeout(count);
+                if(vars[0] > 0){
+                    vars[0] = vars[0] - 1;
                 }
-                else if(secValue <= 0){
-                    sec.style.setProperty('--value', 59);
-                    min.style.setProperty('--value', --minValue);
-                    if(minValue <= 0){
-                        min.style.setProperty('--value', 59);
-                        hour.style.setProperty('--value', --hourValue);
-                        if(hourValue <= 0){
-                            hour.style.setProperty('--value', 59);
-                            day.style.setProperty('--value', --dayValue);
+                for (var i = 0; i < vars.length; i++) {
+                    if (vars[i] == 0) {
+                        if(vars[i + 1] > 0){
+                            vars[i] = 59;
+                            vars[i + 1] = vars[i + 1] - 1;
                         }
                     }
                 }
+                sec.style.setProperty('--value', vars[0]);
+                min.style.setProperty('--value', vars[1]);
+                hour.style.setProperty('--value', vars[2]);
+                day.style.setProperty('--value', vars[3]);
 
-                if(dayValue == 0 && hourValue == 0 && minValue == 0 && secValue == 0){
+                if(vars[0] == 0 && vars[1] == 0 && vars[2] == 0 && vars[3] == 0){
                     setTimeout(() => {
                             let count = document.getElementById("text");
                             let text = document.getElementById("text");
