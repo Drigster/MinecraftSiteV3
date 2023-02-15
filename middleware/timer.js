@@ -7,6 +7,9 @@ export default (req, res, next) => {
     if(process.env.NODE_ENV === "development"){
         next();
     }
+    else if(req.originalUrl.includes("/api")){
+        next();
+    }
     else{
         let setDate = DateTime.local(2023, 2, 17, 17, 0);
         let deltaDate = setDate.diff(DateTime.now(), ['days', 'hours', 'minutes', 'seconds']);
