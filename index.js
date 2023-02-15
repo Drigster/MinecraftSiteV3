@@ -84,12 +84,12 @@ else{
 		var privateKey  = fs.readFileSync('src/cert/privkey.pem', 'utf8');
 		var certificate = fs.readFileSync('src/cert/cert.pem', 'utf8');
 		var credentials = {key: privateKey, cert: certificate};
-		httpServer = https.createServer(credentials, app);
+		httpsServer = https.createServer(credentials, app);
 	}
 	else{
 		console.log("Certificate not found, falling back to HTTP");
-		httpServer = http.createServer(app);
 	}
+	httpServer = http.createServer(app);
 }
 httpServer.listen(process.env.HTTP_PORT, () => {
   	console.log(`Http server is running on http://localhost:${process.env.HTTP_PORT}`);
