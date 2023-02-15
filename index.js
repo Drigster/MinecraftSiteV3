@@ -80,9 +80,9 @@ if(process.env.NODE_ENV === "development"){
 	httpServer = http.createServer(app);
 }
 else{
-	if(fs.existsSync('src/cert/server.key')){
-		var privateKey  = fs.readFileSync('src/cert/server.key', 'utf8');
-		var certificate = fs.readFileSync('src/cert/server.crt', 'utf8');
+	if(fs.existsSync('src/cert/privkey.key')){
+		var privateKey  = fs.readFileSync('src/cert/privkey.key', 'utf8');
+		var certificate = fs.readFileSync('src/cert/cert.crt', 'utf8');
 		var credentials = {key: privateKey, cert: certificate};
 		httpServer = https.createServer(credentials, app);
 	}
