@@ -1,7 +1,5 @@
 import express from "express";
-import { v4 as uuid } from "uuid";
 import bcrypt from "bcrypt";
-import jwt from 'jwt-express';
 
 import db from "../database/surreal.js";
 
@@ -136,8 +134,6 @@ router.get("/api/user/uuid/:uuid", async (req, res) => {
 router.get("/api/user/current", async (req, res) => {
     let token = req.get("Authorization");
     token = token.split(" ");
-    console.log("token");
-    console.log(token);
     if (token[0] == "Bearer") {
         const session = await db.queryFirst(`SELECT * FROM session WHERE token = "${token[1]}"`);
         if (session) {
@@ -148,7 +144,6 @@ router.get("/api/user/current", async (req, res) => {
                 "user": await userData.json(),
                 "expireIn": session.expires
             };
-            console.log(HttpUserSession);
             res.status(200).json(HttpUserSession);
         }
         else {
@@ -174,8 +169,7 @@ router.get("/api/auth/details", async (req, res) => {
 
 // joinServerUrl
 router.post("/api/server/joinServer", async (req, res) => {
-    console.log("join");
-    const user = await db.queryFirst(`SELECT * FROM "${req.body.username}"`);
+    const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
     if (user) {
         const session = await db.queryFirst(`SELECT * FROM "${user.session}"`);
         if(session && session.token == req.body.accessToken){
@@ -189,15 +183,13 @@ router.post("/api/server/joinServer", async (req, res) => {
 
 // checkServerUrl
 router.post("/api/server/checkServer", async (req, res) => {
-    console.log("check");
-    const user = await db.queryFirst(`SELECT * FROM "${req.body.username}"`);
+    const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
     if(user){
         if(user.serverId == req.body.serverId){
             const userData = await fetch(`${process.env.BASE_URL}/api/user/name/${user.username}`);
-            res.status(200).json(userData);
+            res.status(200).json(await userData.json());
         }
         else{
-            // server not found
             res.status(404).json({ error: "auth.usernotfound" });
         }
     }
