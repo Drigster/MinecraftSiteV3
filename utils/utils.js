@@ -63,7 +63,11 @@ export async function sendVerificationToken(email, route) {
         from: '"DicePVP" <auth@disepvp.ee>',
         to: email,
         subject: "Verify your account!",
-        html: buildVerification(token)
+        html: buildVerification(token),
+        headers: {
+            "X-Entity-Ref-ID": Math.random().toString().substring(2)
+        }
+
     });
 
     if(process.env.NODE_ENV === "development"){

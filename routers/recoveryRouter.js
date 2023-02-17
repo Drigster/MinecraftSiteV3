@@ -38,6 +38,14 @@ router.get("/recovery/password/request", (req, res) => {
     return res.render("info", { title: "Востановление пароль", message: "Для продолжения перейдите по ссылке отправленой вам на почту" });
 });
 
+router.get("/recovery/verify/request", (req, res) => {
+    if(!jwt.valid()){
+        return res.redirect("/logout");
+    }
+    sendVerificationToken(req.jwt.payload.user.email, "verify");
+    return res.render("info", { title: "Верефикация", message: "Для продолжения перейдите по ссылке отправленой вам на почту" });
+});
+
 router.get("/recovery/password/:token", (req, res) => {
     const verifyToken = verifyVerificationToken(req.params.token);
     if(!verifyToken){

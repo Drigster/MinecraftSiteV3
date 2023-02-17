@@ -59,7 +59,7 @@
     </div>
 {% endmacro %}
 
-{% macro message_modal(id, titleText, message, href) %}
+{% macro message_modal(id, titleText, message, buttonText, href) %}
     <input type="checkbox" id="{{ id }}" class="modal-toggle" />
     <div class="modal" id="{{ id }}">
         <div class="w-full max-w-md p-8 bg-bg rounded-2xl relative modal-box">
@@ -76,7 +76,7 @@
 			</div>
             <div class="flex items-center justify-center text-center my-4">
                 <a class="w-1/2" href="{{ href }}">
-                    <button class="w-full">Изменить</button>
+                    <button class="w-full">{{buttonText}}</button>
                 </a>
             </div>
         </div>

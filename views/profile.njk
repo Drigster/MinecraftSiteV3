@@ -26,7 +26,7 @@
 					{% if user.verified %}
 						<td class="text-green-500">Верифицирован</td>
 					{% else %}
-						<td class="text-yellow-400">Не верифицирован</td>
+						<td class="text-yellow-400">Не верифицирован<label class="link pl-2 text-sm" for="verify-modal">Верифицировать</label></td>
 					{% endif %}
 				</tr>
 				<tr>
@@ -83,9 +83,10 @@
 			};
 		}
 	</script>
-	{{ macros.change_modal("username-modal", "Сменить никнейм", "Никнейм", "newusername", "/api/change/username") }}
-	{{ macros.change_modal("email-modal", "Сменить почту", "Почта", "newemail", "/api/change/email") }}
-	{{ macros.message_modal("password-modal", "Сменить пароль", "Для смены паролья на почту будет отправлена ссылка", "/recovery/password/request") }}
+	{{ macros.change_modal("username-modal", "Смена никнейма", "Никнейм", "newusername", "/api/change/username") }}
+	{{ macros.change_modal("email-modal", "Смена почты", "Почта", "newemail", "/api/change/email") }}
+	{{ macros.message_modal("password-modal", "Смена пароля", "Для смены паролья на почту будет отправлена ссылка", "Изменить", "/recovery/password/request") }}
+	{{ macros.message_modal("verify-modal", "Верефикация", "Для верификации на почту будет отправлена ссылка", "Верифицировать", "/recovery/verify/request") }}
 	{{ macros.skin_modal("skin-modal", "Скин", "skin", "/api/upload/skin") }}
 	{{ macros.skin_modal("cape-modal", "Плащь", "cape", "/api/upload/cape") }}
 {% endblock %}
