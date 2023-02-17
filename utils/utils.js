@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import db from "../database/surreal.js";
+import { buildVerification } from './email.js';
 
 dotenv.config();
 
@@ -62,7 +63,7 @@ export async function sendVerificationToken(email, route) {
         from: '"DicePVP" <auth@disepvp.ee>',
         to: email,
         subject: "Verify your account!",
-        html: `<a href='${process.env.BASE_URL}/${route}/${token}'>Hello world?</a>`
+        html: buildVerification(token)
     });
 
     if(process.env.NODE_ENV === "development"){
