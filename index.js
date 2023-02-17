@@ -19,6 +19,7 @@ import apiRouter from "./routers/apiRouter.js";
 import skinRouter from "./routers/skinRouter.js";
 import changeRouter from "./routers/changeRouter.js";
 import recoveryRouter from "./routers/recoveryRouter.js";
+import downloadRouter from "./routers/downloadRouter.js";
 
 const app = express();
 dotenv.config();
@@ -69,6 +70,7 @@ app.use("/", apiRouter);
 app.use("/", skinRouter);
 app.use("/", changeRouter);
 app.use("/", recoveryRouter);
+app.use("/", downloadRouter);
 
 app.get("*", (req, res) => {
 	res.render("error")
