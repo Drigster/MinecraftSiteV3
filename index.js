@@ -62,7 +62,7 @@ app.use(Timer);
 app.use(FlashMessages);
 	
 app.get("/", (req, res) => {
-	res.render("index");
+	return res.render("index");
 });
 
 app.use("/", authRouter);
@@ -73,7 +73,7 @@ app.use("/", recoveryRouter);
 app.use("/", downloadRouter);
 
 app.get("*", (req, res) => {
-	res.render("error")
+	return res.render("error")
 });
 
 var httpServer;

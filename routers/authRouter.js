@@ -10,7 +10,7 @@ import { sendVerificationToken, verifyVerificationToken } from "../utils/utils.j
 const router = express.Router();
 
 router.get("/register", (req, res) => {
-    res.render("register");
+    return res.render("register");
 });
 
 router.post("/register", async (req, res) => {
@@ -19,10 +19,9 @@ router.post("/register", async (req, res) => {
         req.session.error = "Пожалуйста заполните все поля!";
         return res.redirect("register");
     }
-    const userQuery = await (db.query(`SELECT * FROM user WHERE username = "${req.body.username}"`));
-    const user = userQuery[0].result;
-    const emailQuery = await (db.query(`SELECT * FROM user WHERE email = "${req.body.email}"`));
-    const emailCheck = emailQuery[0].result;
+    const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
+    const emailCheck = await db.queryFirst(`SELECT * FROM user WHERE email = "${req.body.email}"`);
+    
     if(!usernameRegex.test(req.body.username)){
         req.session.error = "Никнейм имеет недопустимые символы!";
     }
@@ -57,11 +56,11 @@ router.post("/register", async (req, res) => {
         return res.redirect("login");
     }
     req.session.save();
-    res.redirect("register");
+    return res.redirect("register");
 });
 
 router.get("/login", (req, res) => {
-    res.render("login");
+    return res.render("login");
 });
 
 router.post("/login", async (req, res) => {
@@ -69,8 +68,7 @@ router.post("/login", async (req, res) => {
         req.session.error = "Пожалуйста заполните все поля!";
         return res.redirect("register");
     }
-    const query = await (db.query(`SELECT * FROM user WHERE username = "${req.body.username}"`));
-    const user = query[0].result[0];
+    const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
     if(!user){
         req.session.error = "Пользователь не найден!";
     }
@@ -85,20 +83,20 @@ router.post("/login", async (req, res) => {
         });
         return res.redirect("profile");
     }
-    res.redirect("login");
+    return res.redirect("login");
 });
 
 router.get("/profile", (req, res) => {
     if(!req.jwt.valid){
         return res.redirect("login");
     }
-    res.render("profile", { SkinViewer: SkinViewer });
+    return res.render("profile", { SkinViewer: SkinViewer });
 });
 
 router.get("/logout", (req, res) => {
     req.jwt.revoke();
     jwt.clear();
-    res.redirect("/");
+    return res.redirect("/");
 });
 
 router.get("/admin", async (req, res) => {
@@ -109,7 +107,7 @@ router.get("/admin", async (req, res) => {
         return res.render("error", { error: { status: 418, message: "I'm a Teapot" } });
     }
     const users = await db.select("user");
-    res.render("admin", { users });
+    return res.render("admin", { users });
 });
 
 router.get("/verify/:token", async (req, res) => {

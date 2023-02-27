@@ -80,7 +80,7 @@ router.post("/api/upload/skin", async (req, res) => {
         req.session.error = "Файл не найден!";
     }
 
-    res.redirect("/profile")
+    return res.redirect("/profile")
 });
 
 router.post("/api/delete/skin", async (req, res) => {
@@ -119,7 +119,7 @@ router.post("/api/delete/skin", async (req, res) => {
         req.session.error = "Файл не найден!";
     }
 
-    res.redirect("/profile")
+    return res.redirect("/profile")
 });
 
 export default router;

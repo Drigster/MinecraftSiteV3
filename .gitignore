@@ -5,3 +5,5 @@ public/css/style.css
 public/img/skin/*.*
 !public/img/skin/default.png
 !public/img/skin/default_head.png
+public/files
+src/cert/*

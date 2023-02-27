@@ -13,7 +13,7 @@ router.get("/download", async (req, res) => {
     res.download(`${filePath}/files/DisePVP.exe`, "DisePVP.exe", function (err) {
         if (err) {
             console.log(err);
-            res.render("error")
+            return res.render("error")
         }
     });
 });

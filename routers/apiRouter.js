@@ -31,18 +31,18 @@ router.post("/api/auth/authorize", async (req, res) => {
                     "oauthExpire": 0,
                     "session": await HttpUserSession.json()
                 };
-                res.status(200).json(AuthReport);
+                return res.status(200).json(AuthReport);
             }
             else {
-                res.status(200).json({ error: "auth.require2fa" });
+                return res.status(200).json({ error: "auth.require2fa" });
             }
         }
         else {
-            res.status(200).json({ error: "auth.wrongpassword" });
+            return res.status(200).json({ error: "auth.wrongpassword" });
         }
     }
     else {
-        res.status(404).json({ error: "auth.usernotfound" })
+        return res.status(404).json({ error: "auth.usernotfound" })
     }
 });
 
@@ -79,18 +79,18 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
             "expireIn": session.expires
         };
 
-        res.status(200).json(HttpUserSession);
+        return res.status(200).json(HttpUserSession);
     }
     else {
-        res.status(404).json({ error: "auth.usernotfound" });
+        return res.status(404).json({ error: "auth.usernotfound" });
     }
 });
 
 // getUserByUsernameUrl
 router.get("/api/user/name/:username", async (req, res) => {
     const user = await (db.queryFirst(`SELECT * FROM user WHERE username = "${req.params.username}"`));
-    const session = await db.queryFirst(`SELECT * FROM session WHERE user = "${user.id}"`);
     if (user) {
+        const session = await db.queryFirst(`SELECT * FROM session WHERE user = "${user.id}"`);
         const userData = {
             "username": user.username,
             "uuid": user.uuid,
@@ -114,24 +114,29 @@ router.get("/api/user/name/:username", async (req, res) => {
             }
         };
 
-        res.status(200).json(userData);
+        return res.status(200).json(userData);
     }
     else {
-        res.status(404).json({ error: "auth.usernotfound" });
+        return res.status(404).json({ error: "auth.usernotfound" });
     }
 });
 
 // getUserByLoginUrl
 router.get("/api/user/login/:login", async (req, res) => {
     const userData = await fetch(`${process.env.BASE_URL}/api/user/name/${req.params.login}`);
-    res.status(200).json(await userData.json());
+    return res.status(200).json(await userData.json());
 });
 
 // getUserByUUIDUrl
 router.get("/api/user/uuid/:uuid", async (req, res) => {
     const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.params.uuid}"`);
-    const userData = await fetch(`${process.env.BASE_URL}/api/user/name/${user.username}`);
-    res.status(200).json(await userData.json());
+    if(user){
+        const userData = await fetch(`${process.env.BASE_URL}/api/user/name/${user.username}`);
+        return res.status(200).json(await userData.json());
+    }
+    else {
+        return res.status(404).json({ error: "auth.usernotfound" });
+    }
 });
 
 // getUserByTokenUrl
@@ -148,14 +153,14 @@ router.get("/api/user/current", async (req, res) => {
                 "user": await userData.json(),
                 "expireIn": session.expires
             };
-            res.status(200).json(HttpUserSession);
+            return res.status(200).json(HttpUserSession);
         }
         else {
-            res.status(404).json({ error: "auth.usernotfound" });
+            return res.status(404).json({ error: "auth.usernotfound" });
         }
     }
     else {
-        res.status(200).json({ error: "auth.invalidtoken" })
+        return res.status(200).json({ error: "auth.invalidtoken" })
     }
 });
 
@@ -168,7 +173,7 @@ router.get("/api/auth/details", async (req, res) => {
             }
         ]
     }
-    res.status(200).json(details);
+    return res.status(200).json(details);
 });
 
 // joinServerUrl
@@ -176,13 +181,13 @@ router.post("/api/server/joinServer", async (req, res) => {
     const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
     if (user) {
         const session = await db.queryFirst(`SELECT * FROM "${user.session}"`);
-        if(session && session.token == req.body.accessToken){
-            await db.change(`${user.id}`, {
+        if(session && (session.token == req.body.accessToken)){
+            let newUser = await db.change(`${user.id}`, {
                 serverId: req.body.serverId
             });
         }
     }
-    res.status(200).json();
+    return res.status(200).json();
 });
 
 // checkServerUrl
@@ -191,14 +196,14 @@ router.post("/api/server/checkServer", async (req, res) => {
     if(user){
         if(user.serverId == req.body.serverId){
             const userData = await fetch(`${process.env.BASE_URL}/api/user/name/${user.username}`);
-            res.status(200).json(await userData.json());
+            return res.status(200).json(await userData.json());
         }
         else{
-            res.status(404).json({ error: "auth.usernotfound" });
+            return res.status(404).json({ error: "auth.usernotfound" });
         }
     }
     else{
-        res.status(404).json({ error: "auth.usernotfound" });
+        return res.status(404).json({ error: "auth.usernotfound" });
     }
 });
 

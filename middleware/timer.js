@@ -20,7 +20,7 @@ export default (req, res, next) => {
                 minute: deltaDate.minutes, 
                 second: Math.round(deltaDate.seconds)
             }
-            res.render("timer", data);
+            return res.render("timer", data);
         }
         else{
             next();
