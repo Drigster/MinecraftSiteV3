@@ -64,16 +64,18 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
                     "PLAYER"
                 ]
             },
-            "SKIN": {
-                "url": `${process.env.BASE_URL}/api/skin/${user.uuid}`,
-                "digest": "",
-                "metadata": {}
-            },
-            "CAPE": {}
+            "assets": {
+                "SKIN": {
+                    "url": `${process.env.BASE_URL}/api/skin/${user.uuid}`,
+                    "digest": "",
+                    "metadata": {}
+                },
+                "CAPE": {}
+            }
         };
         const HttpUserSession = {
             "id": session.id.split(":")[1],
-            "user": ((HttpUser)),
+            "user": HttpUser,
             "expireIn": session.expires
         };
 
@@ -102,12 +104,14 @@ router.get("/api/user/name/:username", async (req, res) => {
                     "PLAYER"
                 ]
             },
-            "SKIN": {
-                "url": `${process.env.BASE_URL}/api/skin/${user.uuid}`,
-                "digest": "",
-                "metadata": {}
-            },
-            "CAPE": {}
+            "assets": {
+                "SKIN": {
+                    "url": `${process.env.BASE_URL}/api/skin/${user.uuid}`,
+                    "digest": "",
+                    "metadata": {}
+                },
+                "CAPE": {}
+            }
         };
 
         res.status(200).json(userData);
