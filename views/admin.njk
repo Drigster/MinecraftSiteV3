@@ -5,6 +5,7 @@
 	<div class="lg:mx-12 mx-4 2xl:container h-auto content">
 		<table class="table table-compact w-full">
 			<tr>
+				<th>UUID</th>
 				<th>Username</th>
 				<th>Email</th>
 				<th>Verified</th>
@@ -12,6 +13,7 @@
 			</tr>
 			{% for user in users %}
 				<tr>
+					<td>{{ user.uuid }}</td>
 					<td>{{ user.username }}</td>
 					<td>{{ user.email }}</td>
 					<td>{{ user.verified }}</td>

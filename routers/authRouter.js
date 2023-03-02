@@ -107,6 +107,7 @@ router.get("/admin", async (req, res) => {
         return res.render("error", { error: { status: 418, message: "I'm a Teapot" } });
     }
     const users = await db.select("user");
+    users.sort((a, b) => parseInt(a.info.regDate) - parseFloat(b.info.regDate));
     return res.render("admin", { users });
 });
 
