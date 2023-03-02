@@ -3,8 +3,10 @@ import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import db from "../database/surreal.js";
 import { buildVerification } from './email.js';
+import { Logger } from './logger.js';
 
 dotenv.config();
+const logger = new Logger();
 
 let transporter;
 try {
@@ -34,10 +36,9 @@ try {
             }
         });
     }
-    console.log("Transport ready");
+    logger.log("INFO", "Transport ready");
 } catch (error) {
-    console.log("ERROR\n");
-    console.log(error);
+    logger.log("ERROR", error);
 }
 
 export function createVerificationToken(email) {
@@ -71,7 +72,7 @@ export async function sendVerificationToken(email, route) {
     });
 
     if(process.env.NODE_ENV === "development"){
-        console.log('Preview URL: ' + nodemailer.getTestMessageUrl(info));
+        logger.log("DEBUG", 'Preview URL: ' + nodemailer.getTestMessageUrl(info));
     }
 }
 
@@ -86,6 +87,6 @@ export async function sendUsername(email) {
     });
 
     if(process.env.NODE_ENV === "development"){
-        console.log('Preview URL: ' + nodemailer.getTestMessageUrl(info));
+        logger.log("DEBUG", 'Preview URL: ' + nodemailer.getTestMessageUrl(info));
     }
 }

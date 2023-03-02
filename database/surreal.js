@@ -1,8 +1,10 @@
 import Surreal from "surrealdb.js";
 import dotenv from 'dotenv';
 import bcrypt from "bcrypt";
+import { Logger } from './../utils/logger.js';
 
 dotenv.config();
+const logger = new Logger();
 
 let db_url = process.env.DATABASE_URL;
 let db_user = process.env.DATABASE_USER;
@@ -33,26 +35,26 @@ async function queryAll(queryString) {
 
 export async function initDB() {
     try {
-        console.log("Initializing database...");
+        logger.log("INFO", "Initializing database...");
         if (!db_user || !db_pass) {
             throw new Error("DB_USERNAME or DB_PASSWORD not set")
         }
         await db.connect(db_url)
         .then(() => {
-            console.log("Connected to database");
+            logger.log("INFO", "Connected to database");
         })
         .catch((err) => {
-            console.log("Error connecting to database", err);
+            logger.log("ERROR", "Error connecting to database", err);
         });
         await db.signin({
             user: db_user,
             pass: db_pass,
         })
         .then((res) => {
-            console.log("Signed in to database", res);
+            logger.log("INFO", "Signed in to database", res);
         })
         .catch((err) => {
-            console.log("Error signing in to database", err);
+            logger.log("ERROR", "Error signing in to database", err);
         });
         
         await db.use("dice", "dice");
@@ -76,11 +78,11 @@ export async function initDB() {
                 }
             })
             .then((res) => {
-                console.log("Created default user", res);
+                logger.log("INFO", "Created default user", res);
             });
         }
     } catch (err) {
-        console.error(err);
+        logger.log("ERROR", err);
     }
 }
 export default db;

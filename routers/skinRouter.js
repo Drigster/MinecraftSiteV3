@@ -7,7 +7,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 import db from "../database/surreal.js";
+import { Logger } from "../utils/logger.js";
 
+const logger = new Logger();
 const router = express.Router();
 
 var fileSendOptions = {
@@ -53,8 +55,8 @@ router.post("/api/upload/skin", async (req, res) => {
             let filePath = path.resolve(fileUploadPath, req.jwt.payload.user.uuid + ".png");
             req.files.skin.mv(filePath, (err) => {
                 if(err){
-                    console.log("File upload error: " + err);
-                    console.log("User: " + req.jwt.payload.user.username);
+                    logger.log("ERROR", "File upload error: " + err);
+                    logger.log("ERROR", "User: " + req.jwt.payload.user.username);
                     req.session.error = "Ошибка сервера, попробуйте позже!";
                 }
     
@@ -62,8 +64,8 @@ router.post("/api/upload/skin", async (req, res) => {
                 
                 Jimp.read(filePath, (err, skin) => {
                     if (err) {
-                        console.log("Head create error: " + err);
-                        console.log("User: " + req.jwt.payload.user.username);
+                        logger.log("ERROR", "Head create error: " + err);
+                        logger.log("ERROR", "User: " + req.jwt.payload.user.username);
                         req.session.error = "Ошибка создания аватара, попробуйте позже!";
                     }
                     skin.crop(8, 8, 8, 8)
@@ -92,8 +94,8 @@ router.post("/api/delete/skin", async (req, res) => {
             let filePath = path.resolve(fileUploadPath, req.jwt.payload.user.uuid + ".png");
             req.files.skin.mv(filePath, (err) => {
                 if(err){
-                    console.log("File upload error: " + err);
-                    console.log("User: " + req.jwt.payload.user.username);
+                    logger.log("ERROR", "File upload error: " + err);
+                    logger.log("ERROR", "User: " + req.jwt.payload.user.username);
                     req.session.error = "Ошибка сервера, попробуйте позже!";
                 }
                 
@@ -101,8 +103,8 @@ router.post("/api/delete/skin", async (req, res) => {
                 
                 Jimp.read(filePath, (err, skin) => {
                     if (err) {
-                        console.log("Head create error: " + err);
-                        console.log("User: " + req.jwt.payload.user.username);
+                        logger.log("ERROR", "Head create error: " + err);
+                        logger.log("ERROR", "User: " + req.jwt.payload.user.username);
                         req.session.error = "Ошибка создания аватара, попробуйте позже!";
                     }
                     skin.crop(8, 8, 8, 8)

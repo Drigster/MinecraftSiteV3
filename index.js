@@ -20,8 +20,10 @@ import skinRouter from "./routers/skinRouter.js";
 import changeRouter from "./routers/changeRouter.js";
 import recoveryRouter from "./routers/recoveryRouter.js";
 import downloadRouter from "./routers/downloadRouter.js";
+import { Logger } from './utils/logger.js';
 
 const app = express();
+const logger = new Logger();
 dotenv.config();
 initDB();
 
@@ -89,15 +91,15 @@ else{
 		httpsServer = https.createServer(credentials, app);
 	}
 	else{
-		console.log("Certificate not found, falling back to HTTP");
+		logger.log("WARN", "Certificate not found, falling back to HTTP");
 	}
 	httpServer = http.createServer(app);
 }
 httpServer.listen(process.env.HTTP_PORT, () => {
-  	console.log(`Http server is running on http://localhost:${process.env.HTTP_PORT}`);
+  	logger.log("INFO", `Http server is running on http://localhost:${process.env.HTTP_PORT}`);
 });
 if(httpsServer){
 	httpsServer.listen(process.env.HTTPS_PORT, () => {
-		console.log(`Https server is running on port: ${process.env.HTTPS_PORT}`);
+		logger.log("INFO", `Https server is running on port: ${process.env.HTTPS_PORT}`);
   	});
 }
