@@ -7,7 +7,8 @@
     "db": "surreal start --bind 127.0.0.1:8001 --log debug --user root --pass root file://\"./database/storage/\"",
     "dev": "npx nodemon",
     "tailwind": "npx tailwindcss -i ./src/css/tailwind.css -o ./public/css/style.css --watch",
-    "livereload": "npx livereload . -ee njk"
+    "livereload": "npx livereload . -ee njk",
+    "start": "pm2 start index.js"
   },
   "type": "module",
   "repository": {
@@ -38,6 +39,7 @@
     "nodemailer": "^6.9.1",
     "nunjucks": "^3.2.3",
     "path": "^0.12.7",
+    "pm2": "^5.2.2",
     "skinview3d": "^3.0.0-alpha.1",
     "surrealdb.js": "^0.5.0",
     "uuid": "^9.0.0"
