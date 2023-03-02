@@ -14,6 +14,8 @@ import { initDB } from "./database/surreal.js";
 
 import FlashMessages from './middleware/NunjucksGlobals.js';
 import Timer from './middleware/timer.js';
+import Logs from './middleware/logs.js';
+import ErrorHandler from './middleware/errorHandler.js';
 import authRouter from "./routers/authRouter.js";
 import apiRouter from "./routers/apiRouter.js";
 import skinRouter from "./routers/skinRouter.js";
@@ -60,8 +62,8 @@ env.addFilter('dateString', function(str) {
 });
 
 app.use(Timer);
-
 app.use(FlashMessages);
+app.use(Logs);
 	
 app.get("/", (req, res) => {
 	return res.render("index");
@@ -77,6 +79,8 @@ app.use("/", downloadRouter);
 app.get("*", (req, res) => {
 	return res.render("error")
 });
+
+app.use(ErrorHandler);
 
 var httpServer;
 var httpsServer;

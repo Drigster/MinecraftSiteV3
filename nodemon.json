@@ -3,7 +3,8 @@
     "ignore": [
         ".git",
         "node_modules/**/node_modules",
-        "database/storage"
+        "database/storage",
+        "logs"
     ],
     "verbose": true,
     "execMap": {
