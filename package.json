@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "db": "surreal start --bind 127.0.0.1:8001 --log debug --user root --pass root file://\"./database/storage/\"",
-    "dev": "npx nodemon",
+    "dev": "npx nodemon .",
     "tailwind": "npx tailwindcss -i ./src/css/tailwind.css -o ./public/css/style.css --watch",
     "livereload": "npx livereload . -ee njk",
     "start": "pm2 start index.js"

@@ -4,7 +4,8 @@
         ".git",
         "node_modules/**/node_modules",
         "database/storage",
-        "logs"
+        "public/",
+        "logs/"
     ],
     "verbose": true,
     "execMap": {
