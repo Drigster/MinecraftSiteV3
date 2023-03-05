@@ -20,9 +20,30 @@ router.post("/api/auth/authorize", async (req, res) => {
                     user: `${user.id}`,
                     expires: (Date.now() + 60 * 60 * 1000)
                 });
-                await db.change(`${user.id}`, {
-                    session: `${session.id}`,
-                });
+                if(user.extras.fakeUsername){                    
+                    const fakeUser = await db.queryFirst(`SELECT * FROM user WHERE username = "${user.extras.fakeUsername}"`);
+                    if(fakeUser){
+                        await db.change(`${fakeUser.id}`, {
+                            session: `${session.id}`
+                        });
+                    }
+                    else{
+                        await db.change(`${user.id}`, {
+                            session: `${session.id}`,
+                            info: {
+                                lastPlayed: Date.now()
+                            },
+                        });
+                    }
+                }
+                else {
+                    await db.change(`${user.id}`, {
+                        session: `${session.id}`,
+                        info: {
+                            lastPlayed: Date.now()
+                        },
+                    });
+                }
                 const HttpUserSession = await fetch(`${process.env.BASE_URL}/api/user/token/${session.token}`);
                 const AuthReport = {
                     "minecraftAccessToken": session.token,
@@ -53,9 +74,6 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
     if (session) {
         const login = user.extras?.fakeUsername ? user.extras.fakeUsername : user.username;
         await db.change(`${user.id}`, {
-            info: {
-                lastPlayed: Date.now()
-            },
             extras: {
                 fakeUsername: null
             }
@@ -162,6 +180,12 @@ router.get("/api/user/current", async (req, res) => {
                 "user": await userData.json(),
                 "expireIn": session.expires
             };
+            await db.change(`${user.id}`, {
+                session: `${session.id}`,
+                info: {
+                    lastPlayed: Date.now()
+                },
+            });
             return res.status(200).json(HttpUserSession);
         }
         else {
