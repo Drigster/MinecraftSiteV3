@@ -22,9 +22,6 @@ router.post("/api/auth/authorize", async (req, res) => {
                 });
                 await db.change(`${user.id}`, {
                     session: `${session.id}`,
-                    info: {
-                        lastLogin: Date.now()
-                    }
                 });
                 const HttpUserSession = await fetch(`${process.env.BASE_URL}/api/user/token/${session.token}`);
                 const AuthReport = {
@@ -56,6 +53,9 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
     if (session) {
         const login = user.extras?.fakeUsername ? user.extras.fakeUsername : user.username;
         await db.change(`${user.id}`, {
+            info: {
+                lastPlayed: Date.now()
+            },
             extras: {
                 fakeUsername: null
             }
