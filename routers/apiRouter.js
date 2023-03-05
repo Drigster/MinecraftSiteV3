@@ -10,7 +10,7 @@ router.post("/api/auth/authorize", async (req, res) => {
     const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.login}"`);
     if (user) {
         if (await bcrypt.compare(req.body.password.password, user.password)) {
-            if(user.verified){
+            if(user.verified && !user.extras.banned){
                 if (user.session) {
                     await db.query(`DELETE session WHERE user.id = ${user.id}`)
                 }
@@ -21,7 +21,10 @@ router.post("/api/auth/authorize", async (req, res) => {
                     expires: (Date.now() + 60 * 60 * 1000)
                 });
                 await db.change(`${user.id}`, {
-                    session: `${session.id}`
+                    session: `${session.id}`,
+                    info: {
+                        lastLogin: Date.now()
+                    }
                 });
                 const HttpUserSession = await fetch(`${process.env.BASE_URL}/api/user/token/${session.token}`);
                 const AuthReport = {
@@ -34,7 +37,7 @@ router.post("/api/auth/authorize", async (req, res) => {
                 return res.status(200).json(AuthReport);
             }
             else {
-                return res.status(200).json({ error: "auth.require2fa" });
+                return res.status(200).json({ error: "auth.userblocked" });
             }
         }
         else {
