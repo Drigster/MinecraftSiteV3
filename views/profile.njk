@@ -1,10 +1,18 @@
 {% extends "base.njk" %}
 {% import "./partials/macros.njk" as macros %}
 
+{% if viewUser %}
+	{% set profileUser = viewUser %}
+{% else %}
+	{% set profileUser = user %}
+{% endif %}
+
 {% block title %}Профиль{% endblock %}
-<div></div>
 {% block content %}
 <div class="lg:mx-12 mx-4 2xl:container h-auto content">
+	{% if user.permissions|contains("admin") and viewUser %}
+		<p class="text-center mb-4 text-foxy-orange text-xl" >Просмотр профиля</p>
+	{% endif %}
 	<div class="grid grid-cols-12 gap-2">
 		<div class="col-span-12 xl:col-span-3 md:col-span-4 min-h-[320px]">
 			<div class="w-full h-full">
@@ -15,27 +23,53 @@
 			<table class="userTable">
 				<tr>
 					<td>Никнейм</td>
-					<td id="nickname">{{ user.username }}<label class="link pl-2 text-xs" for="username-modal">Сменить</label></td>
+					<td>{{ profileUser.username }}<label class="link pl-2 text-xs" for="username-modal">Сменить</label></td>
 				</tr>
+				{% if user.permissions|contains("admin") and viewUser %}
+					<td>UUID</td>
+					<td>{{ profileUser.uuid }}<label class="link pl-2 text-xs" for="uuid-modal">Сменить</label></td>
+				{% endif %}
 				<tr>
 					<td>Почта</td>
-					<td>{{ user.email }}<label class="link pl-2 text-xs" for="email-modal">Сменить</label></td>
+					<td>{{ profileUser.email }}<label class="link pl-2 text-xs" for="email-modal">Сменить</label></td>
 				</tr>
 				<tr>
 					<td>Статус аккаунта</td>
-					{% if user.verified %}
-						<td class="text-green-500">Верифицирован</td>
+					{% if profileUser.extras.banned %}
+						<td class="text-red-500">
+							Забанен
+							{% if user.permissions|contains("admin") and viewUser %}
+								<label class="link pl-2 text-sm" for="unban-modal">Разбанить</label>
+							{% endif %}
+						</td>
+					{% elif profileUser.verified %}
+						<td class="text-green-500">
+							Верифицирован
+							{% if user.permissions|contains("admin") and viewUser %}
+								<label class="link pl-2 text-sm" for="ban-modal">Забанить</label>
+							{% endif %}
+						</td>
 					{% else %}
-						<td class="text-yellow-400">Не верифицирован<label class="link pl-2 text-sm" for="verify-modal">Верифицировать</label></td>
+						<td class="text-yellow-400">
+							Не верифицирован
+							{% if user.permissions|contains("admin") and viewUser %}
+								<label class="link pl-2 text-sm" for="verify-admin-modal">Верифицировать</label>
+							{% else %}
+								<label class="link pl-2 text-sm" for="verify-modal">Верифицировать</label>
+							{% endif %}
+							{% if user.permissions|contains("admin") and viewUser %}
+								<label class="link pl-2 text-sm" for="ban-modal">Забанить</label>
+							{% endif %}
+						</td>
 					{% endif %}
 				</tr>
 				<tr>
 					<td>Дата регистрации</td>
-					<td>{{ user.info.regDate|dateString}}</td>
+					<td>{{ profileUser.info.regDate|dateString}}</td>
 				</tr>
 				<tr>
 					<td>Последняя активность</td>
-					<td>{{ user.info.lastPlayed|dateString }}</td>
+					<td>{{ profileUser.info.lastPlayed|dateString }}</td>
 				</tr>
 				<tr>
 					<td>Пароль</td>
@@ -49,6 +83,10 @@
 					<td>Плащ</td>
 					<td>{# <label class="link pl-2 text-xs" for="cape-modal">Изменить</label> #}</td>
 				</tr>
+				{% if user.permissions|contains("admin") and viewUser %}
+					<td>Fake Username</td>
+					<td>{{ profileUser.extras.fakeUsername }}<label class="link pl-2 text-xs" for="fake-username-modal">Сменить</label></td>
+				{% endif %}
 			</table>
 		</div>
 	</div>
@@ -61,7 +99,7 @@
 			const canvas = document.getElementById("skin_container")
 			let skinViewer = new skinview3d.SkinViewer({
 				canvas: canvas,
-				skin: "/api/skin/{{ user.username }}",
+				skin: "/api/skin/{{ profileUser.username }}",
 			});
 			skinViewer.width = canvas.parentElement.clientWidth;
 			skinViewer.height = canvas.parentElement.clientHeight;
@@ -89,6 +127,40 @@
 	{{ macros.message_modal("verify-modal", "Верефикация", "Для верификации на почту будет отправлена ссылка", "Верифицировать", "/recovery/verify/request") }}
 	{{ macros.skin_modal("skin-modal", "Скин", "skin", "/api/upload/skin") }}
 	{{ macros.skin_modal("cape-modal", "Плащь", "cape", "/api/upload/cape") }}
+	
+	{% if user.permissions|contains("admin") and viewUser %}
+		{{ macros.change_modal("uuid-modal", "Смена uuid", "UUID", "newuuid", "/api/change/uuid") }}
+		{{ macros.post_modal("ban-modal", "Забанить", "Вы уверены что хотите забанить " + profileUser.username + "?", "Забанить", "/admin/ban", ["username"], [profileUser.username]) }}
+		{{ macros.post_modal("unban-modal", "Разбанить", "Вы уверены что хотите разбанить " + profileUser.username + "?", "Разбанить", "/admin/unban", ["username"], [profileUser.username]) }}
+		{{ macros.post_modal("verify-admin-modal", "Верефикация", "Пользователь будет верефицирован", "Верифицировать", "/admin/verify", ["username"], [profileUser.username]) }}
+		{# macros.change_modal("fake-username-modal", "Fake Username", "Username", "username", "/admin/fake") #}
+		<input type="checkbox" id="fake-username-modal" class="modal-toggle" />
+		<div class="modal" id="fake-username-modal">
+			<form action="/admin/fake" method="POST">
+				<input type="hidden" name="username" value={{profileUser.username}}>
+				<div class="w-full max-w-md p-8 bg-bg rounded-2xl relative modal-box">
+					<label for="fake-username-modal" class="text-foxy-orange absolute right-3 top-3 cursor-pointer text-xl">✕</label>
+					<div>
+						<h2 class="text-center text-3xl font-bold tracking-tight text-foxy-orange">Fake username</h2>
+					</div>
+					<div class="flex items-center justify-center text-center my-4 text-xl text-foxy-blue">
+						<div class="text-sm">
+							<p class="text-center text-sm">
+								Фейковый никнейм позволяет залогинится в лаунчер под другим пользователем. Очищается после одного входа.
+							</p>
+						</div>
+					</div>
+					<div class="pt-4">
+                        <label for="text" class="sr-only">Никнейм</label>
+                        <input id="text" name="fakeUsername" type="text" required class="relative block w-full py-2" placeholder="Никнейм">
+					</div>
+					<div class="flex items-center justify-center text-center my-4">
+						<button class="w-full" type="submit">Подтвердить</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	{% endif %}
 {% endblock %}
 {% block alert %}	
 	{% if error %}

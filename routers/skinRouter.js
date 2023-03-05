@@ -18,8 +18,8 @@ var fileSendOptions = {
 
 const fileUploadPath = path.resolve(__dirname, "..", "public", "img", "skin")
 
-router.get("/api/skin/:uuid", async (req, res) => {
-    const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.params.uuid}" OR username = "${req.params.uuid}"`);
+router.get("/api/skin/:user", async (req, res) => {
+    const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.params.user}" OR username = "${req.params.user}"`);
     if (user) {
         res.sendFile(`/img/skin/${user.uuid}.png`, fileSendOptions, function (err) {
             if (err) {
@@ -32,8 +32,8 @@ router.get("/api/skin/:uuid", async (req, res) => {
     }
 });
 
-router.get("/api/skin/head/:uuid", async (req, res) => {
-    const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.params.uuid}" OR username = "${req.params.uuid}"`);
+router.get("/api/skin/head/:user", async (req, res) => {
+    const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.params.user}" OR username = "${req.params.user}"`);
     if (user) {
         res.sendFile(`/img/skin/${user.uuid}_head.png`, fileSendOptions, function (err) {
             if (err) {
