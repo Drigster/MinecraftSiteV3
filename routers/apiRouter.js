@@ -10,7 +10,7 @@ router.post("/api/auth/authorize", async (req, res) => {
     const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.login}"`);
     if (user) {
         if (await bcrypt.compare(req.body.password.password, user.password)) {
-            if(user.verified && !user.extras.banned){
+            if(user.verified && !user.extras?.banned){
                 if (user.session) {
                     await db.query(`DELETE session WHERE user.id = ${user.id}`)
                 }
@@ -54,8 +54,14 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
     const session = await db.queryFirst(`SELECT * FROM session WHERE token = "${token}"`);
     const user = await db.queryFirst(`SELECT * FROM "${session.user}"`);
     if (session) {
+        const login = user.extras?.fakeUsername ? user.extras.fakeUsername : user.username;
+        await db.change(`${user.id}`, {
+            extras: {
+                fakeUsername: null
+            }
+        });
         const HttpUser = {
-            "username": user.username,
+            "username": login,
             "uuid": user.uuid,
             "accessToken": session.token,
             "permissions": {
