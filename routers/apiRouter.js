@@ -20,7 +20,7 @@ router.post("/api/auth/authorize", async (req, res) => {
                     user: `${user.id}`,
                     expires: (Date.now() + 60 * 60 * 1000)
                 });
-                if(user.extras.fakeUsername){                    
+                if(user.extras?.fakeUsername){                    
                     const fakeUser = await db.queryFirst(`SELECT * FROM user WHERE username = "${user.extras.fakeUsername}"`);
                     if(fakeUser){
                         await db.change(`${fakeUser.id}`, {
