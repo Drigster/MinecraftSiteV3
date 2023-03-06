@@ -93,22 +93,23 @@ router.get("/profile", (req, res) => {
     return res.render("profile", { SkinViewer: SkinViewer });
 });
 
+router.get("/profile/:user", async (req, res) => {
+    if(!req.jwt.payload.user.permissions.includes("admin")){
+        return res.render("error");
+    }
+    const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.params.user}" OR username = "${req.params.user}"`);
+    if(user){
+        return res.render("profile", { SkinViewer: SkinViewer, viewUser: user });
+    }
+    else {
+        return res.render("error");
+    }
+});
+
 router.get("/logout", (req, res) => {
     req.jwt.revoke();
     jwt.clear();
     return res.redirect("/");
-});
-
-router.get("/admin", async (req, res) => {
-    if(!req.jwt.valid){
-        return res.render("error");
-    }
-    if(!req.jwt.payload.user.permissions.includes("admin")){
-        return res.render("error", { error: { status: 418, message: "I'm a Teapot" } });
-    }
-    const users = await db.select("user");
-    users.sort((a, b) => parseInt(a.info.regDate) - parseFloat(b.info.regDate));
-    return res.render("admin", { users });
 });
 
 router.get("/verify/:token", async (req, res) => {
@@ -131,6 +132,76 @@ router.get("/verify/:token", async (req, res) => {
             return res.render("info", { title: "Пользователь не найден", message: "Возможно изменилась почта?" });
         }
     }
+});
+
+router.get("/admin", async (req, res) => {
+    if(!req.jwt.valid){
+        return res.render("error");
+    }
+    if(!req.jwt.payload.user.permissions.includes("admin")){
+        return res.render("error", { error: { status: 418, message: "I'm a Teapot" } });
+    }
+    const users = await db.select("user");
+    users.sort((a, b) => parseInt(a.info.regDate) - parseFloat(b.info.regDate));
+    return res.render("admin", { users });
+});
+
+router.post("/admin/ban", async (req, res) => {
+    if(!req.jwt.payload.user.permissions.includes("admin")){
+        return res.render("error");
+    }
+    const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
+    if(user){
+        const newUser = await db.change(user.id, {
+            extras: {
+                banned: true
+            }
+        })
+    }
+    return res.redirect("/profile/" + req.body.username);
+});
+
+router.post("/admin/unban", async (req, res) => {
+    if(!req.jwt.payload.user.permissions.includes("admin")){
+        return res.render("error");
+    }
+    const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
+    if(user){
+        const newUser = await db.change(user.id, {
+            extras: {
+                banned: false
+            }
+        })
+    }
+    return res.redirect("/profile/" + req.body.username);
+});
+
+router.post("/admin/verify", async (req, res) => {
+    if(!req.jwt.payload.user.permissions.includes("admin")){
+        return res.render("error");
+    } 
+    const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
+    if(user){
+        const newUser = await db.change(user.id, {
+            verified: true
+        })
+    }
+    return res.redirect("/profile/" + req.body.username);
+});
+
+router.post("/admin/fake", async (req, res) => {
+    if(!req.jwt.payload.user.permissions.includes("admin")){
+        return res.render("error");
+    } 
+    const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
+    if(user){
+        const newUser = await db.change(user.id, {
+            extras: {
+                fakeUsername: req.body.fakeUsername
+            }
+        })
+    }
+    return res.redirect("/profile/" + req.body.username);
 });
 
 export default router;

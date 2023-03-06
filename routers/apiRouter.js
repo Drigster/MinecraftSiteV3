@@ -10,7 +10,7 @@ router.post("/api/auth/authorize", async (req, res) => {
     const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.login}"`);
     if (user) {
         if (await bcrypt.compare(req.body.password.password, user.password)) {
-            if(user.verified){
+            if(user.verified && !user.extras?.banned){
                 if (user.session) {
                     await db.query(`DELETE session WHERE user.id = ${user.id}`)
                 }
@@ -20,9 +20,30 @@ router.post("/api/auth/authorize", async (req, res) => {
                     user: `${user.id}`,
                     expires: (Date.now() + 60 * 60 * 1000)
                 });
-                await db.change(`${user.id}`, {
-                    session: `${session.id}`
-                });
+                if(user.extras.fakeUsername){                    
+                    const fakeUser = await db.queryFirst(`SELECT * FROM user WHERE username = "${user.extras.fakeUsername}"`);
+                    if(fakeUser){
+                        await db.change(`${fakeUser.id}`, {
+                            session: `${session.id}`
+                        });
+                    }
+                    else{
+                        await db.change(`${user.id}`, {
+                            session: `${session.id}`,
+                            info: {
+                                lastPlayed: Date.now()
+                            },
+                        });
+                    }
+                }
+                else {
+                    await db.change(`${user.id}`, {
+                        session: `${session.id}`,
+                        info: {
+                            lastPlayed: Date.now()
+                        },
+                    });
+                }
                 const HttpUserSession = await fetch(`${process.env.BASE_URL}/api/user/token/${session.token}`);
                 const AuthReport = {
                     "minecraftAccessToken": session.token,
@@ -34,7 +55,7 @@ router.post("/api/auth/authorize", async (req, res) => {
                 return res.status(200).json(AuthReport);
             }
             else {
-                return res.status(200).json({ error: "auth.require2fa" });
+                return res.status(200).json({ error: "auth.userblocked" });
             }
         }
         else {
@@ -51,8 +72,14 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
     const session = await db.queryFirst(`SELECT * FROM session WHERE token = "${token}"`);
     const user = await db.queryFirst(`SELECT * FROM "${session.user}"`);
     if (session) {
+        const login = user.extras?.fakeUsername ? user.extras.fakeUsername : user.username;
+        await db.change(`${user.id}`, {
+            extras: {
+                fakeUsername: null
+            }
+        });
         const HttpUser = {
-            "username": user.username,
+            "username": login,
             "uuid": user.uuid,
             "accessToken": session.token,
             "permissions": {
@@ -153,6 +180,12 @@ router.get("/api/user/current", async (req, res) => {
                 "user": await userData.json(),
                 "expireIn": session.expires
             };
+            await db.change(`${user.id}`, {
+                session: `${session.id}`,
+                info: {
+                    lastPlayed: Date.now()
+                },
+            });
             return res.status(200).json(HttpUserSession);
         }
         else {

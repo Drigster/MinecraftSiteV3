@@ -83,6 +83,35 @@
     </div>
 {% endmacro %}
 
+{% macro post_modal(id, titleText, message, buttonText, href, data_names, data_values) %}
+    <input type="checkbox" id="{{ id }}" class="modal-toggle" />
+    <div class="modal" id="{{ id }}">
+        <form action={{ href }} method="POST">
+            {% set i = 0 %}
+            {% for data_name in data_names %}
+                <input type="hidden" name={{data_name}} value={{data_values[i]}}>
+                {% set i = i + 1 %}
+            {% endfor %}
+            <div class="w-full max-w-md p-8 bg-bg rounded-2xl relative modal-box">
+                <label for="{{ id }}" class="text-foxy-orange absolute right-3 top-3 cursor-pointer text-xl">✕</label>
+                <div>
+                    <h2 class="text-center text-3xl font-bold tracking-tight text-foxy-orange">{{ titleText }}</h2>
+                </div>
+                <div class="flex items-center justify-center text-center my-4 text-xl text-foxy-blue">
+                    <div class="text-sm">
+                        <p class="text-center text-sm">
+                            {{ message }}
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-center text-center my-4">
+                    <button class="w-full" type="submit">{{buttonText}}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endmacro %}
+
 {% macro alert_error(error) %}
     <div class="alert alert-error">
         <div>
