@@ -2,7 +2,9 @@ import express from "express";
 import bcrypt from "bcrypt";
 
 import db from "../database/surreal.js";
+import { Logger } from '../utils/logger.js';
 
+const logger = new Logger();
 const router = express.Router();
 
 // authorizeUrl
@@ -12,7 +14,8 @@ router.post("/api/auth/authorize", async (req, res) => {
         if (await bcrypt.compare(req.body.password.password, user.password)) {
             if(user.verified && !user.extras?.banned){
                 if (user.session) {
-                    await db.query(`DELETE session WHERE user.id = ${user.id}`)
+                    logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} session exists, deleting!`);
+                    await db.query(`DELETE session WHERE user.id = ${user.id}`);
                 }
                 const token = getRandomString(16);
                 const session = await db.create("session", {
@@ -20,8 +23,10 @@ router.post("/api/auth/authorize", async (req, res) => {
                     user: `${user.id}`,
                     expires: (Date.now() + 60 * 60 * 1000)
                 });
-                if(user.extras?.fakeUsername){                    
+                logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} session created: ${session.id}!`);
+                if(user.extras?.fakeUsername){
                     const fakeUser = await db.queryFirst(`SELECT * FROM user WHERE username = "${user.extras.fakeUsername}"`);
+                    logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} is faked to ${user.extras.fakeUsername}!`);
                     if(fakeUser){
                         await db.change(`${fakeUser.id}`, {
                             session: `${session.id}`
@@ -43,6 +48,7 @@ router.post("/api/auth/authorize", async (req, res) => {
                             lastPlayed: Date.now()
                         },
                     });
+                    logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} assigned session!`);
                 }
                 const HttpUserSession = await fetch(`${process.env.BASE_URL}/api/user/token/${session.token}`);
                 const AuthReport = {
@@ -52,17 +58,21 @@ router.post("/api/auth/authorize", async (req, res) => {
                     "oauthExpire": 0,
                     "session": await HttpUserSession.json()
                 };
+                logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} returning AuthReport: ${AuthReport}`);
                 return res.status(200).json(AuthReport);
             }
             else {
+                logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} is blocked!`)
                 return res.status(200).json({ error: "auth.userblocked" });
             }
         }
         else {
+            logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} wrong password!`)
             return res.status(200).json({ error: "auth.wrongpassword" });
         }
     }
     else {
+        logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} not found!`)
         return res.status(404).json({ error: "auth.usernotfound" })
     }
 });
@@ -105,10 +115,11 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
             "user": HttpUser,
             "expireIn": session.expires
         };
-
+        logger.log("DEBUG", `[/api/user/token/:sessionToken] Session ${token} returning HttpUserSession: ${HttpUserSession}`);
         return res.status(200).json(HttpUserSession);
     }
     else {
+        logger.log("DEBUG", `[/api/user/token/:sessionToken] Session ${token} not found!`);
         return res.status(404).json({ error: "auth.usernotfound" });
     }
 });
@@ -140,10 +151,12 @@ router.get("/api/user/name/:username", async (req, res) => {
                 "CAPE": {}
             }
         };
+        logger.log("DEBUG", `[/api/user/name/:username] User ${req.params.username} returning UserData: ${userData}`);
 
         return res.status(200).json(userData);
     }
     else {
+        logger.log("DEBUG", `[/api/user/name/:username] User ${req.params.username} not found!`);
         return res.status(404).json({ error: "auth.usernotfound" });
     }
 });
@@ -151,6 +164,7 @@ router.get("/api/user/name/:username", async (req, res) => {
 // getUserByLoginUrl
 router.get("/api/user/login/:login", async (req, res) => {
     const userData = await fetch(`${process.env.BASE_URL}/api/user/name/${req.params.login}`);
+    logger.log("DEBUG", `[/api/user/login/:login] User ${req.params.login} returning UserData: ${userData}`);
     return res.status(200).json(await userData.json());
 });
 
@@ -159,9 +173,11 @@ router.get("/api/user/uuid/:uuid", async (req, res) => {
     const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.params.uuid}"`);
     if(user){
         const userData = await fetch(`${process.env.BASE_URL}/api/user/name/${user.username}`);
+        logger.log("DEBUG", `[/api/user/uuid/:uuid] User ${req.params.uuid} returning UserData: ${userData}`);
         return res.status(200).json(await userData.json());
     }
     else {
+        logger.log("DEBUG", `[/api/user/uuid/:uuid] User ${req.params.uuid} not found!`);
         return res.status(404).json({ error: "auth.usernotfound" });
     }
 });
@@ -186,13 +202,16 @@ router.get("/api/user/current", async (req, res) => {
                     lastPlayed: Date.now()
                 },
             });
+            logger.log("DEBUG", `[/api/user/current] Session with token ${token[1]} returning HttpUserSession: ${HttpUserSession}`);
             return res.status(200).json(HttpUserSession);
         }
         else {
+            logger.log("DEBUG", `[/api/user/current] Session with token ${token[1]} not found!`);
             return res.status(404).json({ error: "auth.usernotfound" });
         }
     }
     else {
+        logger.log("DEBUG", `[/api/user/current] Token is expected!`);
         return res.status(200).json({ error: "auth.invalidtoken" })
     }
 });
@@ -206,6 +225,7 @@ router.get("/api/auth/details", async (req, res) => {
             }
         ]
     }
+    logger.log("DEBUG", `[/api/auth/details] Returning AuthDetails: ${details}`);
     return res.status(200).json(details);
 });
 
@@ -218,7 +238,11 @@ router.post("/api/server/joinServer", async (req, res) => {
             let newUser = await db.change(`${user.id}`, {
                 serverId: req.body.serverId
             });
+            logger.log("DEBUG", `[/api/server/joinServer] User ${req.body.username} added serverId!`);
         }
+    }
+    else{
+        logger.log("DEBUG", `[/api/server/joinServer] User ${req.body.username} not found!`);
     }
     return res.status(200).json();
 });
@@ -229,13 +253,16 @@ router.post("/api/server/checkServer", async (req, res) => {
     if(user){
         if(user.serverId == req.body.serverId){
             const userData = await fetch(`${process.env.BASE_URL}/api/user/name/${user.username}`);
+            logger.log("DEBUG", `[/api/server/checkServer] User ${req.body.username} returning UserData: ${userData}`);
             return res.status(200).json(await userData.json());
         }
         else{
+            logger.log("DEBUG", `[/api/server/checkServer] User ${req.body.username} server Ids are different: ${user.serverId} != ${req.body.serverId}!`);
             return res.status(404).json({ error: "auth.usernotfound" });
         }
     }
     else{
+        logger.log("DEBUG", `[/api/server/checkServer] User ${req.body.username} not found!`);
         return res.status(404).json({ error: "auth.usernotfound" });
     }
 });
