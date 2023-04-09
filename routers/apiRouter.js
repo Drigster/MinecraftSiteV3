@@ -1,5 +1,6 @@
 import express from "express";
 import bcrypt from "bcrypt";
+import CryptoJS from "cryptojs";
 
 import db from "../database/surreal.js";
 import { Logger } from '../utils/logger.js';
@@ -88,8 +89,10 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
                 fakeUsername: null
             }
         });
-        const file = await fetch(`${req.protocol}://${req.hostname}/api/skin/${user.uuid}`);
-        console.log(await file.text());
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        const md5Hash = CryptoJS.MD5(bytes).toString(CryptoJS.enc.Hex);
+        const digest = CryptoJS.enc.Base64.stringify(md5Hash);
+        console.log(digest);
         const HttpUser = {
             "username": login,
             "uuid": user.uuid,
@@ -104,12 +107,12 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
                 ]
             },
             "assets": {
-                // "SKIN": {
-                //     "url": `${req.protocol}://${req.hostname}/api/skin/${user.uuid}`,
-                //     "digest": "",
-                //     "metadata": {}
-                // },
-                // "CAPE": {}
+                "SKIN": {
+                    "url": `${req.protocol}://${req.hostname}/api/skin/${user.uuid}`,
+                    "digest": digest,
+                    "metadata": {}
+                },
+                "CAPE": {}
             }
         };
         const HttpUserSession = {
@@ -131,6 +134,11 @@ router.get("/api/user/name/:username", async (req, res) => {
     const user = await (db.queryFirst(`SELECT * FROM user WHERE username = "${req.params.username}"`));
     if (user) {
         const session = await db.queryFirst(`SELECT * FROM session WHERE user = "${user.id}"`);
+        const response = await fetch(`${req.protocol}://${req.hostname}/api/skin/${user.uuid}`);
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        const md5Hash = CryptoJS.MD5(bytes).toString(CryptoJS.enc.Hex);
+        const digest = CryptoJS.enc.Base64.stringify(md5Hash);
+        console.log(digest);
         const userData = {
             "username": user.username,
             "uuid": user.uuid,
@@ -145,12 +153,12 @@ router.get("/api/user/name/:username", async (req, res) => {
                 ]
             },
             "assets": {
-                // "SKIN": {
-                //     "url": `${req.protocol}://${req.hostname}/api/skin/${user.uuid}`,
-                //     "digest": "",
-                //     "metadata": {}
-                // },
-                // "CAPE": {}
+                "SKIN": {
+                    "url": `${req.protocol}://${req.hostname}/api/skin/${user.uuid}`,
+                    "digest": digest,
+                    "metadata": {}
+                },
+                "CAPE": {}
             }
         };
         logger.log("DEBUG", `[/api/user/name/:username] User ${req.params.username} returning UserData: ${JSON.stringify(userData)}`);
