@@ -89,6 +89,7 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
                 fakeUsername: null
             }
         });
+        const response = await fetch(`${req.protocol}://${req.hostname}/api/skin/${user.uuid}`);
         const bytes = new Uint8Array(await response.arrayBuffer());
         const md5Hash = CryptoJS.MD5(bytes).toString(CryptoJS.enc.Hex);
         const digest = CryptoJS.enc.Base64.stringify(md5Hash);
