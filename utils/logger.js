@@ -40,7 +40,7 @@ export class Logger {
                 typeColorAnsi = "\x1B[35m";
                 break;
             case "DEBUG":
-                if(process.env.NODE_ENV !== "development" || process.env.DEBUG_LOGS !== true){
+                if(process.env.NODE_ENV == "production" && process.env.DEBUG_LOGS == false){
                     return
                 }
                 typeColorAnsi = "\x1B[34m";
