@@ -90,9 +90,8 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
             }
         });
         const response = await fetch(`${req.protocol}://${req.hostname}/api/skin/${user.uuid}`);
-        const bytes = new Uint8Array(await response.arrayBuffer());
-        const md5Hash = CryptoJS.MD5(bytes);
-        const digest = CryptoJS.enc.Base64.stringify(md5Hash);
+        const md5Hash = CryptoJS.MD5(response).toString();
+        const digest = CryptoJS.enc.Base64.parse(md5Hash).toString();
         console.log(digest);
         const HttpUser = {
             "username": login,
@@ -136,9 +135,8 @@ router.get("/api/user/name/:username", async (req, res) => {
     if (user) {
         const session = await db.queryFirst(`SELECT * FROM session WHERE user = "${user.id}"`);
         const response = await fetch(`${req.protocol}://${req.hostname}/api/skin/${user.uuid}`);
-        const bytes = new Uint8Array(await response.arrayBuffer());
-        const md5Hash = CryptoJS.MD5(bytes);
-        const digest = CryptoJS.enc.Base64.stringify(md5Hash);
+        const md5Hash = CryptoJS.MD5(response).toString();
+        const digest = CryptoJS.enc.Base64.parse(md5Hash).toString();
         console.log(digest);
         const userData = {
             "username": user.username,
