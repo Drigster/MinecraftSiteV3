@@ -1,6 +1,6 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import CryptoJS from "cryptojs";
+import CryptoJS from "crypto-js";
 
 import db from "../database/surreal.js";
 import { Logger } from '../utils/logger.js';
