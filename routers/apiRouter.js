@@ -50,7 +50,7 @@ router.post("/api/auth/authorize", async (req, res) => {
                     });
                     logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} assigned session!`);
                 }
-                const HttpUserSession = await fetch(`${process.env.BASE_URL}/api/user/token/${session.token}`);
+                const HttpUserSession = await fetch(`${req.protocol}://${req.hostname}/api/user/token/${session.token}`);
                 const AuthReport = {
                     "minecraftAccessToken": session.token,
                     "oauthAccessToken": session.token,
@@ -58,7 +58,7 @@ router.post("/api/auth/authorize", async (req, res) => {
                     "oauthExpire": 0,
                     "session": await HttpUserSession.json()
                 };
-                logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} returning AuthReport: ${AuthReport}`);
+                logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} returning AuthReport: ${JSON.stringify(AuthReport)}`);
                 return res.status(200).json(AuthReport);
             }
             else {
@@ -88,6 +88,8 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
                 fakeUsername: null
             }
         });
+        const file = await fetch(`${req.protocol}://${req.hostname}/api/skin/${user.uuid}`);
+        console.log(await file.text());
         const HttpUser = {
             "username": login,
             "uuid": user.uuid,
@@ -102,12 +104,12 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
                 ]
             },
             "assets": {
-                "SKIN": {
-                    "url": `${process.env.BASE_URL}/api/skin/${user.uuid}`,
-                    "digest": "",
-                    "metadata": {}
-                },
-                "CAPE": {}
+                // "SKIN": {
+                //     "url": `${req.protocol}://${req.hostname}/api/skin/${user.uuid}`,
+                //     "digest": "",
+                //     "metadata": {}
+                // },
+                // "CAPE": {}
             }
         };
         const HttpUserSession = {
@@ -115,7 +117,7 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
             "user": HttpUser,
             "expireIn": session.expires
         };
-        logger.log("DEBUG", `[/api/user/token/:sessionToken] Session ${token} returning HttpUserSession: ${HttpUserSession}`);
+        logger.log("DEBUG", `[/api/user/token/:sessionToken] Session ${token} returning HttpUserSession: ${JSON.stringify(HttpUserSession)}`);
         return res.status(200).json(HttpUserSession);
     }
     else {
@@ -143,15 +145,15 @@ router.get("/api/user/name/:username", async (req, res) => {
                 ]
             },
             "assets": {
-                "SKIN": {
-                    "url": `${process.env.BASE_URL}/api/skin/${user.uuid}`,
-                    "digest": "",
-                    "metadata": {}
-                },
-                "CAPE": {}
+                // "SKIN": {
+                //     "url": `${req.protocol}://${req.hostname}/api/skin/${user.uuid}`,
+                //     "digest": "",
+                //     "metadata": {}
+                // },
+                // "CAPE": {}
             }
         };
-        logger.log("DEBUG", `[/api/user/name/:username] User ${req.params.username} returning UserData: ${userData}`);
+        logger.log("DEBUG", `[/api/user/name/:username] User ${req.params.username} returning UserData: ${JSON.stringify(userData)}`);
 
         return res.status(200).json(userData);
     }
@@ -163,8 +165,8 @@ router.get("/api/user/name/:username", async (req, res) => {
 
 // getUserByLoginUrl
 router.get("/api/user/login/:login", async (req, res) => {
-    const userData = await fetch(`${process.env.BASE_URL}/api/user/name/${req.params.login}`);
-    logger.log("DEBUG", `[/api/user/login/:login] User ${req.params.login} returning UserData: ${userData}`);
+    const userData = await fetch(`${req.protocol}://${req.hostname}/api/user/name/${req.params.login}`);
+    logger.log("DEBUG", `[/api/user/login/:login] User ${req.params.login} returning UserData: ${JSON.stringify(userData)}`);
     return res.status(200).json(await userData.json());
 });
 
@@ -172,8 +174,8 @@ router.get("/api/user/login/:login", async (req, res) => {
 router.get("/api/user/uuid/:uuid", async (req, res) => {
     const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.params.uuid}"`);
     if(user){
-        const userData = await fetch(`${process.env.BASE_URL}/api/user/name/${user.username}`);
-        logger.log("DEBUG", `[/api/user/uuid/:uuid] User ${req.params.uuid} returning UserData: ${userData}`);
+        const userData = await fetch(`${req.protocol}://${req.hostname}/api/user/name/${user.username}`);
+        logger.log("DEBUG", `[/api/user/uuid/:uuid] User ${req.params.uuid} returning UserData: ${JSON.stringify(userData)}`);
         return res.status(200).json(await userData.json());
     }
     else {
@@ -190,7 +192,7 @@ router.get("/api/user/current", async (req, res) => {
         const session = await db.queryFirst(`SELECT * FROM session WHERE token = "${token[1]}"`);
         if (session) {
             const user = await db.queryFirst(`SELECT * FROM "${session.user}"`);
-            const userData = await fetch(`${process.env.BASE_URL}/api/user/name/${user.username}`);
+            const userData = await fetch(`${req.protocol}://${req.hostname}/api/user/name/${user.username}`);
             const HttpUserSession = {
                 "id": session.id.split(":")[1],
                 "user": await userData.json(),
@@ -202,7 +204,7 @@ router.get("/api/user/current", async (req, res) => {
                     lastPlayed: Date.now()
                 },
             });
-            logger.log("DEBUG", `[/api/user/current] Session with token ${token[1]} returning HttpUserSession: ${HttpUserSession}`);
+            logger.log("DEBUG", `[/api/user/current] Session with token ${token[1]} returning HttpUserSession: ${JSON.stringify(HttpUserSession)}`);
             return res.status(200).json(HttpUserSession);
         }
         else {
@@ -225,7 +227,7 @@ router.get("/api/auth/details", async (req, res) => {
             }
         ]
     }
-    logger.log("DEBUG", `[/api/auth/details] Returning AuthDetails: ${details}`);
+    logger.log("DEBUG", `[/api/auth/details] Returning AuthDetails: ${JSON.stringify(details)}`);
     return res.status(200).json(details);
 });
 
@@ -252,8 +254,8 @@ router.post("/api/server/checkServer", async (req, res) => {
     const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
     if(user){
         if(user.serverId == req.body.serverId){
-            const userData = await fetch(`${process.env.BASE_URL}/api/user/name/${user.username}`);
-            logger.log("DEBUG", `[/api/server/checkServer] User ${req.body.username} returning UserData: ${userData}`);
+            const userData = await fetch(`${req.protocol}://${req.hostname}/api/user/name/${user.username}`);
+            logger.log("DEBUG", `[/api/server/checkServer] User ${req.body.username} returning UserData: ${JSON.stringify(userData)}`);
             return res.status(200).json(await userData.json());
         }
         else{
