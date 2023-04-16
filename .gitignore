@@ -8,3 +8,4 @@ public/img/skin/*.*
 public/files
 src/cert/*
 logs/*
+.vscode

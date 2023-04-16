@@ -167,7 +167,7 @@ router.get("/api/user/name/:username", async (req, res) => {
 // getUserByLoginUrl
 router.get("/api/user/login/:login", async (req, res) => {
     const userData = await fetch(`${req.protocol}://${req.hostname}/api/user/name/${req.params.login}`);
-    logger.log("DEBUG", `[/api/user/login/:login] User ${req.params.login} returning UserData: ${JSON.stringify(userData)}`);
+    logger.log("DEBUG", `[/api/user/login/:login] User ${req.params.login} returning UserData: ${JSON.stringify(await userData.json())}`);
     return res.status(200).json(await userData.json());
 });
 
@@ -175,9 +175,9 @@ router.get("/api/user/login/:login", async (req, res) => {
 router.get("/api/user/uuid/:uuid", async (req, res) => {
     const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.params.uuid}"`);
     if(user){
-        const userData = await fetch(`${req.protocol}://${req.hostname}/api/user/name/${user.username}`);
+        const userData = await (await fetch(`${req.protocol}://${req.hostname}/api/user/name/${user.username}`)).json();
         logger.log("DEBUG", `[/api/user/uuid/:uuid] User ${req.params.uuid} returning UserData: ${JSON.stringify(userData)}`);
-        return res.status(200).json(await userData.json());
+        return res.status(200).json(userData);
     }
     else {
         logger.log("DEBUG", `[/api/user/uuid/:uuid] User ${req.params.uuid} not found!`);
@@ -255,9 +255,9 @@ router.post("/api/server/checkServer", async (req, res) => {
     const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
     if(user){
         if(user.serverId == req.body.serverId){
-            const userData = await fetch(`${req.protocol}://${req.hostname}/api/user/name/${user.username}`);
+            const userData = await (await fetch(`${req.protocol}://${req.hostname}/api/user/name/${user.username}`)).json();
             logger.log("DEBUG", `[/api/server/checkServer] User ${req.body.username} returning UserData: ${JSON.stringify(userData)}`);
-            return res.status(200).json(await userData.json());
+            return res.status(200).json(userData);
         }
         else{
             logger.log("DEBUG", `[/api/server/checkServer] User ${req.body.username} server Ids are different: ${user.serverId} != ${req.body.serverId}!`);
