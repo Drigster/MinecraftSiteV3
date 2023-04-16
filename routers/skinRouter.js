@@ -20,9 +20,10 @@ const fileUploadPath = path.resolve(__dirname, "..", "public", "img", "skin")
 
 router.get("/api/skin/:user", getUserSkin);
 
-router.get("/api/skin/:user.png", getUserSkin);
-
 async function getUserSkin(req, res) {
+    if(req.params.user.endsWith(".png")){
+        req.params.user = req.params.user.replace(".png", "");
+    }
     const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.params.user}" OR username = "${req.params.user}"`);
     if (user) {
         res.sendFile(`/img/skin/${user.uuid}.png`, fileSendOptions, function (err) {
@@ -38,9 +39,10 @@ async function getUserSkin(req, res) {
 
 router.get("/api/skin/head/:user", getUserHeadSkin);
 
-router.get("/api/skin/head/:user.png", getUserHeadSkin);
-
 async function getUserHeadSkin(req, res) {
+    if(req.params.user.endsWith(".png")){
+        req.params.user = req.params.user.replace(".png", "");
+    }
     const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.params.user}" OR username = "${req.params.user}"`);
     if (user) {
         res.sendFile(`/img/skin/${user.uuid}_head.png`, fileSendOptions, function (err) {
