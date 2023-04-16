@@ -4,6 +4,7 @@
 {% block title %}Профиль{% endblock %}
 {% block content %}
 	<div class="lg:mx-12 mx-4 2xl:container h-auto content">
+		<p class="text-center mb-4 text-foxy-orange text-xl">Просмотр профиля</p>
 		<div class="grid grid-cols-12 gap-2">
 			<div class="col-span-12 xl:col-span-3 md:col-span-4 min-h-[320px]">
 				<div class="w-full h-full">
@@ -17,6 +18,10 @@
 						<td>{{ user.username }}<label class="link pl-2 text-xs" for="username-modal">Сменить</label></td>
 					</tr>
 					<tr>
+						<td>UUID</td>
+						<td>{{ user.uuid }}<label class="link pl-2 text-xs" for="uuid-modal">Сменить</label></td>
+					</tr>
+					<tr>
 						<td>Почта</td>
 						<td>{{ user.email }}<label class="link pl-2 text-xs" for="email-modal">Сменить</label></td>
 					</tr>
@@ -25,15 +30,20 @@
 						{% if user.extras.banned %}
 							<td class="text-red-500">
 								Забанен
+								<label class="link pl-2 text-sm" for="unban-modal">Разбанить</label>
 							</td>
 						{% elif user.verified %}
 							<td class="text-green-500">
 								Верифицирован
+								{% if user.permissions|contains("admin") and user %}
+									<label class="link pl-2 text-sm" for="ban-modal">Забанить</label>
+								{% endif %}
 							</td>
 						{% else %}
 							<td class="text-yellow-400">
 								Не верифицирован
-								<label class="link pl-2 text-sm" for="verify-modal">Верифицировать</label>
+								<label class="link pl-2 text-sm" for="verify-admin-modal">Верифицировать</label>
+								<label class="link pl-2 text-sm" for="ban-modal">Забанить</label>
 							</td>
 						{% endif %}
 					</tr>
@@ -56,6 +66,14 @@
 					<tr>
 						<td>Плащ</td>
 						<td>{# <label class="link pl-2 text-xs" for="cape-modal">Изменить</label> #}</td>
+					</tr>
+					<tr>
+						<td>Fake Username</td>
+						<td>{{ user.extras.fakeUsername }}<label class="link pl-2 text-xs" for="fake-username-modal">Сменить</label></td>
+					</tr>
+					<tr>
+						<td>Разрешения лаунчера</td>
+						<td>{{ user.extras.fakeUsername }}<label class="link pl-2 text-xs" for="fake-username-modal">Сменить</label></td>
 					</tr>
 				</table>
 			</div>
@@ -97,6 +115,38 @@
 	{{ macros.message_modal("verify-modal", "Верефикация", "Для верификации на почту будет отправлена ссылка", "Верифицировать", "/recovery/verify/request") }}
 	{{ macros.skin_modal("skin-modal", "Скин", "skin", "/api/upload/skin") }}
 	{{ macros.skin_modal("cape-modal", "Плащь", "cape", "/api/upload/cape") }}
+	
+	{{ macros.change_modal("uuid-modal", "Смена uuid", "UUID", "newuuid", "/api/change/uuid") }}
+	{{ macros.post_modal("ban-modal", "Забанить", "Вы уверены что хотите забанить " + user.username + "?", "Забанить", "/admin/ban", ["username"], [user.username]) }}
+	{{ macros.post_modal("unban-modal", "Разбанить", "Вы уверены что хотите разбанить " + user.username + "?", "Разбанить", "/admin/unban", ["username"], [user.username]) }}
+	{{ macros.post_modal("verify-admin-modal", "Верефикация", "Пользователь будет верефицирован", "Верифицировать", "/admin/verify", ["username"], [user.username]) }}
+	{# macros.change_modal("fake-username-modal", "Fake Username", "Username", "username", "/admin/fake") #}
+	<input type="checkbox" id="fake-username-modal" class="modal-toggle"/>
+	<div class="modal" id="fake-username-modal">
+		<form action="/admin/fake" method="POST">
+			<input type="hidden" name="username" value={{ user.username }}>
+			<div class="w-full max-w-md p-8 bg-bg rounded-2xl relative modal-box">
+				<label for="fake-username-modal" class="text-foxy-orange absolute right-3 top-3 cursor-pointer text-xl">✕</label>
+				<div>
+					<h2 class="text-center text-3xl font-bold tracking-tight text-foxy-orange">Fake username</h2>
+				</div>
+				<div class="flex items-center justify-center text-center my-4 text-xl text-foxy-blue">
+					<div class="text-sm">
+						<p class="text-center text-sm">
+							Фейковый никнейм позволяет залогинится в лаунчер под другим пользователем. Очищается после одного входа.
+						</p>
+					</div>
+				</div>
+				<div class="pt-4">
+					<label for="text" class="sr-only">Никнейм</label>
+					<input id="text" name="fakeUsername" type="text" required class="relative block w-full py-2" placeholder="Никнейм">
+				</div>
+				<div class="flex items-center justify-center text-center my-4">
+					<button class="w-full" type="submit">Подтвердить</button>
+				</div>
+			</div>
+		</form>
+	</div>
 {% endblock %}
 {% block alert %}
 	{% if error %}

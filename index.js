@@ -22,6 +22,8 @@ import skinRouter from "./routers/skinRouter.js";
 import changeRouter from "./routers/changeRouter.js";
 import recoveryRouter from "./routers/recoveryRouter.js";
 import downloadRouter from "./routers/downloadRouter.js";
+import adminRouter from "./routers/adminRouter.js";
+
 import { Logger } from './utils/logger.js';
 
 const app = express();
@@ -75,6 +77,7 @@ app.use("/", skinRouter);
 app.use("/", changeRouter);
 app.use("/", recoveryRouter);
 app.use("/", downloadRouter);
+app.use("/", adminRouter);
 
 app.get("*", (req, res) => {
 	return res.render("error")
