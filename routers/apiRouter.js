@@ -98,21 +98,18 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
             "uuid": user.uuid,
             "accessToken": session.token,
             "permissions": {
-                "perms": [
-                    "launchserver.*",
-                    "launcher.*"
-                ],
+                "perms": [],
                 "roles": [
                     "PLAYER"
                 ]
             },
             "assets": {
-                // "SKIN": {
-                //     "url": `${req.protocol}://${req.hostname}/api/skin/${user.uuid}`,
-                //     "digest": digest,
-                //     "metadata": {}
-                // },
-                // "CAPE": {}
+                "SKIN": {
+                    "url": `${req.protocol}://${req.hostname}/api/skin/${user.uuid}.png`,
+                    "digest": digest,
+                    "metadata": {}
+                },
+                "CAPE": {}
             }
         };
         const HttpUserSession = {
@@ -143,21 +140,18 @@ router.get("/api/user/name/:username", async (req, res) => {
             "uuid": user.uuid,
             "accessToken": session.token,
             "permissions": {
-                "perms": [
-                    "launchserver.*",
-                    "launcher.*"
-                ],
+                "perms": [],
                 "roles": [
                     "PLAYER"
                 ]
             },
             "assets": {
-                // "SKIN": {
-                //     "url": `${req.protocol}://${req.hostname}/api/skin/${user.uuid}`,
-                //     "digest": digest,
-                //     "metadata": {}
-                // },
-                // "CAPE": {}
+                "SKIN": {
+                    "url": `${req.protocol}://${req.hostname}/api/skin/${user.uuid}.png`,
+                    "digest": digest,
+                    "metadata": {}
+                },
+                "CAPE": {}
             }
         };
         logger.log("DEBUG", `[/api/user/name/:username] User ${req.params.username} returning UserData: ${JSON.stringify(userData)}`);
