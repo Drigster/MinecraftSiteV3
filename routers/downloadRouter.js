@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
-import {fileURLToPath} from 'url';
-import { Logger } from './../utils/logger.js';
+import {fileURLToPath} from "url";
+import { Logger } from "./../utils/logger.js";
 
 const logger = new Logger();
 
@@ -13,12 +13,12 @@ const router = express.Router();
 let filePath = path.resolve(__dirname, "..", "public");
 
 router.get("/download", async (req, res) => {
-    res.download(`${filePath}/files/DisePVP.exe`, "DisePVP.exe", function (err) {
-        if (err) {
-            logger.log("ERROR", err);
-            return res.render("error")
-        }
-    });
+	res.download(`${filePath}/files/DisePVP.exe`, "DisePVP.exe", function (err) {
+		if (err) {
+			logger.log("ERROR", err);
+			return res.render("error");
+		}
+	});
 });
 
 export default router;

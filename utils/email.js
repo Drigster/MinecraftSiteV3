@@ -1,9 +1,9 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 dotenv.config();
 
 export function buildVerification(token) {
-    return `<!DOCTYPE html>
+	return `<!DOCTYPE html>
     <html
         lang="en"
         xmlns:v="urn:schemas-microsoft-com:vml"
@@ -169,5 +169,5 @@ export function buildVerification(token) {
                 </tr>
             </table>
         </div>
-    </body></html>`
+    </body></html>`;
 }

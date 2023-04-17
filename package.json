@@ -46,6 +46,8 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "eslint": "^8.38.0",
+    "eslint-plugin-regexp": "^1.14.0",
     "livereload": "^0.9.3",
     "nodemon": "^2.0.20",
     "tailwindcss": "^3.2.4"
