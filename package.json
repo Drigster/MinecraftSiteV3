@@ -8,6 +8,8 @@
     "dev": "npx nodemon .",
     "tailwind": "npx tailwindcss -i ./src/css/tailwind.css -o ./public/css/style.css --watch",
     "livereload": "npx livereload . -ee njk",
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint --fix .",
     "start": "pm2 start index.js"
   },
   "type": "module",
