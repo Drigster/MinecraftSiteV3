@@ -9,7 +9,7 @@ export class Logger {
 		this.logDirectiory = options.logDirectiory || "logs";
 		this.logFilename = options.logFilename || "%date%.log";
 		this.dateFormat = options.dateFormat || "yyyy-LL-dd";
-		this.timeFormat = options.timeFormat || "hh:mm:ss.SSS";
+		this.timeFormat = options.timeFormat || "HH:mm:ss.SSS";
 		this.messageFormat = options.messageFormat || "%time% %c[%type%]%d - %message%";
 	}
 
