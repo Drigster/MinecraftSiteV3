@@ -2,15 +2,31 @@ import express from "express";
 import db from "../database/surreal.js";
 import bcrypt from "bcrypt";
 import jwt from "jwt-express";
+import dotenv from "dotenv";
+import verifier from "captcha-verifier";
+
 import { sendUsername, sendVerificationToken, verifyVerificationToken } from "../utils/utils.js";
+
+dotenv.config();
+verifier.config({
+	reCaptchaV3SecretKey: process.env.CAPTCHA_SECRET, // string
+	reCaptchaV3PassingScore: 0.4, // optional. Number. 0.4 by default
+});
 
 const router = express.Router();
 
 router.get("/recovery", (req, res) => {
-	return res.render("recovery");
+	return res.render("recovery", { siteKey: process.env.CAPTCHA_SITE });
 });
 
 router.post("/recovery", async (req, res) => {
+	const [success] = await verifier.reCaptchaV3(req.body["g-recaptcha-response"], req.ip);
+
+	if (!success) {
+		req.session.error = "Каптча не пройдена!";
+		return res.redirect("register");
+	}
+
 	const user = await db.queryFirst(`SELECT * FROM user WHERE email = "${req.body.email}"`);
 	if(!user){
 		req.session.error = "Аккаунт с данной почтой не найден!";

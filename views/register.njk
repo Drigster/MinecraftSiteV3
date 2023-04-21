@@ -1,14 +1,16 @@
 {% extends "base.njk" %}
 
 {% block title %}Регистрация{% endblock %}
-
+{% block head %}
+	<script src="https://www.google.com/recaptcha/api.js"></script>
+{% endblock %}
 {% block content %}
 <div class="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
 	<div class="w-full max-w-md space-y-8 bg-bg p-8 rounded-2xl">
 		<div>
 			<h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-foxy-orange">Регистрация</h2>
 		</div>
-		<form class="mt-8" action="" method="POST">
+		<form class="mt-8" action="" id="registerForm" method="POST">
 			<div class="-space-y-px rounded-md shadow-sm">
 				<div>
 					<label for="username" class="sr-only">Никнейм</label>
@@ -44,13 +46,27 @@
 				</div>
 			</div>
 			<div>
-				<button type="submit" class="group relative flex w-full justify-center">
+				<button type="submit" class="group relative flex w-full justify-center g-recaptcha text-foxy-blue"
+					data-sitekey="{{ siteKey }}"
+					data-callback="onSubmit"
+					data-action="submit"
+					data-theme="dark">
 					Зарегистрироватся
 				</button>
 			</div>
 		</form>
 	</div>
 </div>
+{% endblock %}
+{% block script %}
+	<script>
+		function onSubmit(token) {
+			let form = document.getElementById("registerForm");
+			if(form.reportValidity()){
+				form.submit();
+			}
+		}
+	</script>
 {% endblock %}
 {% block alert %}
 	{% if error %}

@@ -3,6 +3,14 @@ import { v4 as uuid } from "uuid";
 import bcrypt from "bcrypt";
 import jwt from "jwt-express";
 import { SkinViewer } from "skinview3d";
+import dotenv from "dotenv";
+import verifier from "captcha-verifier";
+
+dotenv.config();
+verifier.config({
+	reCaptchaV3SecretKey: process.env.CAPTCHA_SECRET, // string
+	reCaptchaV3PassingScore: 0.4, // optional. Number. 0.4 by default
+});
 
 import db from "../database/surreal.js";
 import { sendVerificationToken, verifyVerificationToken } from "../utils/utils.js";
@@ -10,10 +18,17 @@ import { sendVerificationToken, verifyVerificationToken } from "../utils/utils.j
 const router = express.Router();
 
 router.get("/register", (req, res) => {
-	return res.render("register");
+	return res.render("register", { siteKey: process.env.CAPTCHA_SITE });
 });
 
 router.post("/register", async (req, res) => {
+	const [success] = await verifier.reCaptchaV3(req.body["g-recaptcha-response"], req.ip);
+
+	if (!success) {
+		req.session.error = "Каптча не пройдена!";
+		return res.redirect("register");
+	}
+
 	const usernameRegex = /^\w{3,16}$/;
 	if(!req.body.username && !req.body.email && !req.body.password && !req.body.password2){
 		req.session.error = "Пожалуйста заполните все поля!";
@@ -60,10 +75,16 @@ router.post("/register", async (req, res) => {
 });
 
 router.get("/login", (req, res) => {
-	return res.render("login");
+	return res.render("login", { siteKey: process.env.CAPTCHA_SITE });
 });
 
 router.post("/login", async (req, res) => {
+	const [success] = await verifier.reCaptchaV3(req.body["g-recaptcha-response"], req.ip);
+
+	if (!success) {
+		req.session.error = "Каптча не пройдена!";
+		return res.redirect("register");
+	}
 	if(!req.body.username && !req.body.password){
 		req.session.error = "Пожалуйста заполните все поля!";
 		return res.redirect("register");
