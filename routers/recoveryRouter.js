@@ -5,7 +5,7 @@ import jwt from "jwt-express";
 import dotenv from "dotenv";
 import verifier from "captcha-verifier";
 
-import { sendUsername, sendVerificationToken, verifyVerificationToken } from "../utils/utils.js";
+import { sendRecoveryToken, sendUsername, sendVerificationToken, verifyVerificationToken } from "../utils/utils.js";
 
 dotenv.config();
 verifier.config({
@@ -50,7 +50,7 @@ router.get("/recovery/password/request", (req, res) => {
 	if(!jwt.valid()){
 		return res.redirect("/logout");
 	}
-	sendVerificationToken(req.jwt.payload.user.email, "recovery/password");
+	sendRecoveryToken(req.jwt.payload.user.email, "recovery/password");
 	return res.render("info", { title: "Востановление пароль", message: "Для продолжения перейдите по ссылке отправленой вам на почту" });
 });
 

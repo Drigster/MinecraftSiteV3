@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import db from "../database/surreal.js";
-import { buildVerification } from "./email.js";
+import { buildPasswordRecovery, buildUsernameRecovery, buildVerification } from "./email.js";
 import { Logger } from "./logger.js";
 
 dotenv.config();
@@ -76,14 +76,36 @@ export async function sendVerificationToken(email) {
 	}
 }
 
+export async function sendRecoveryToken(email) {
+	const token = createVerificationToken(email);
+
+	let info = await transporter.sendMail({
+		from: "\"DicePVP\" <auth@disepvp.ee>",
+		to: email,
+		subject: "Reset password!",
+		html: buildPasswordRecovery(token),
+		headers: {
+			"X-Entity-Ref-ID": Math.random().toString().substring(2)
+		}
+
+	});
+
+	if(process.env.NODE_ENV === "development"){
+		logger.log("DEBUG", "Preview URL: " + nodemailer.getTestMessageUrl(info));
+	}
+}
+
 export async function sendUsername(email) {
 	const user = await db.queryFirst(`SELECT * FROM user WHERE email = "${email}"`);
 
 	let info = await transporter.sendMail({
 		from: "\"DicePVP\" <auth@disepvp.ee>",
 		to: email,
-		subject: "Verify your account!",
-		html: `${user.username}`
+		subject: "Username reminder!",
+		html: buildUsernameRecovery(user.username),
+		headers: {
+			"X-Entity-Ref-ID": Math.random().toString().substring(2)
+		}
 	});
 
 	if(process.env.NODE_ENV === "development"){
