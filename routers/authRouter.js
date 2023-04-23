@@ -5,6 +5,7 @@ import jwt from "jwt-express";
 import { SkinViewer } from "skinview3d";
 import dotenv from "dotenv";
 import verifier from "captcha-verifier";
+import EmailValidator from 'deep-email-validator';
 
 dotenv.config();
 verifier.config({
@@ -23,13 +24,13 @@ router.get("/register", (req, res) => {
 
 router.post("/register", async (req, res) => {
 	const [success] = await verifier.reCaptchaV3(req.body["g-recaptcha-response"], req.ip);
+	const usernameRegex = /^\w{3,16}$/;
 
 	if (!success) {
 		req.session.error = "Каптча не пройдена!";
 		return res.redirect("register");
 	}
 
-	const usernameRegex = /^\w{3,16}$/;
 	if(!req.body.username && !req.body.email && !req.body.password && !req.body.password2){
 		req.session.error = "Пожалуйста заполните все поля!";
 		return res.redirect("register");
@@ -37,11 +38,29 @@ router.post("/register", async (req, res) => {
 	const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
 	const emailCheck = await db.queryFirst(`SELECT * FROM user WHERE email = "${req.body.email}"`);
     
+	const emailStatus = await EmailValidator.validate(`${req.body.email}`);
+
 	if(!usernameRegex.test(req.body.username)){
 		req.session.error = "Никнейм имеет недопустимые символы!";
 	}
 	else if(user){
 		req.session.error = "Профиль с таким никнеймом уже существует!";
+	}
+	else if(!emailStatus.valid){
+		req.session.error = "Эта почта недействительна!";
+		switch (emailStatus.reason) {
+			case "regex":
+				req.session.message = "Неверный формат!";
+				break;
+			case "typo":
+				req.session.message = "Похоже почта имеет опечатку!";
+				break;
+			case "disposable":
+				req.session.message = "Временные почты запрещены!";
+				break;
+			default:
+				break;
+		}
 	}
 	else if(emailCheck){
 		req.session.error = "Эта почта занята!";
