@@ -5,7 +5,7 @@ import jwt from "jwt-express";
 import { SkinViewer } from "skinview3d";
 import dotenv from "dotenv";
 import verifier from "captcha-verifier";
-import EmailValidator from 'deep-email-validator';
+import EmailValidator from "deep-email-validator";
 
 dotenv.config();
 verifier.config({
@@ -49,17 +49,17 @@ router.post("/register", async (req, res) => {
 	else if(!emailStatus.valid){
 		req.session.error = "Эта почта недействительна!";
 		switch (emailStatus.reason) {
-			case "regex":
-				req.session.message = "Неверный формат!";
-				break;
-			case "typo":
-				req.session.message = "Похоже почта имеет опечатку!";
-				break;
-			case "disposable":
-				req.session.message = "Временные почты запрещены!";
-				break;
-			default:
-				break;
+		case "regex":
+			req.session.message = "Неверный формат!";
+			break;
+		case "typo":
+			req.session.message = "Похоже почта имеет опечатку!";
+			break;
+		case "disposable":
+			req.session.message = "Временные почты запрещены!";
+			break;
+		default:
+			break;
 		}
 	}
 	else if(emailCheck){

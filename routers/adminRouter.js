@@ -14,7 +14,8 @@ router.get("/admin", async (req, res) => {
 	}
 	const users = await db.select("user");
 	users.sort((a, b) => parseInt(a.info.regDate) - parseFloat(b.info.regDate));
-	return res.render("admin", { users });
+	const servers = await db.select("server");
+	return res.render("admin", { users, servers });
 });
 
 router.post("/admin/ban", async (req, res) => {

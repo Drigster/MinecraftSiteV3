@@ -23,6 +23,11 @@ export class Logger {
 		let typeColorAnsi = "";
 		let defaultColorAnsi = "\x1B[0m";
 
+		if(message == undefined){
+			message = type;
+			type = "INFO";
+		}
+
 		type = type.toUpperCase();
 
 		switch (type) {

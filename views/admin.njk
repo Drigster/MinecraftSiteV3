@@ -3,27 +3,90 @@
 {% block title %}Админка{% endblock %}
 {% block content %}
 	<div class="lg:mx-12 mx-4 2xl:container h-auto content">
-		<table class="table table-compact w-full">
-			<tr>
-				<th>Username</th>
-				<th>Email</th>
-				<th>Status</th>
-				<th>Last Played</th>
-			</tr>
-			{% for user in users %}
+		<div>
+			<p>Игроки: </p>
+			<table class="table table-compact w-full rounded-tl-none">
 				<tr>
-					<td><a class="link" href="/profile/{{ user.username }}">{{ user.username }}</a></td>
-					<td>{{ user.email }}</td>
-					{% if user.extras.banned %}
-						<td class="text-red-500">Забанен</td>
-					{% elif user.verified %}
-						<td class="text-green-500">Верифицирован</td>
-					{% else %}
-						<td class="text-yellow-400">Не верифицирован</td>
-					{% endif %}
-					<td>{{ user.info.lastPlayed }}</td>
+					<th>Username</th>
+					<th>Email</th>
+					<th>Status</th>
+					<th>Last Played</th>
 				</tr>
-			{% endfor %}
-		</table>
+				{% for user in users %}
+					<tr>
+						<td><a class="link" href="/profile/{{ user.username }}">{{ user.username }}</a></td>
+						<td>{{ user.email }}</td>
+						{% if user.extras.banned %}
+							<td class="text-red-500">Забанен</td>
+						{% elif user.verified %}
+							<td class="text-green-500">Верифицирован</td>
+						{% else %}
+							<td class="text-yellow-400">Не верифицирован</td>
+						{% endif %}
+						<td>{{ user.info.lastPlayed }}</td>
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+		<div class="mt-2">
+		<div class="grid grid-cols-12 gap-2">
+			<div class="col-span-6">
+				<p>Сервера: </p>
+			</div>
+			<div class="col-span-6">
+			</div>
+		</div>
+			<table class="table table-compact w-full rounded-tl-none">
+				<tr>
+					<th>Name</th>
+					<th>Version</th>
+					<th>Status</th>
+				</tr>
+				{% for server in servers %}
+					<tr>
+						<td><a class="link" href="/server/{{ server.name }}">{{ server.name }}</a></td>
+						<td>{{ server.version }}</td>
+						<td>{{ server.status }}</td>
+					</tr>
+				{% endfor %}
+				<tr>
+					<td colspan="3" class="text-center"><label class="link" for="server-modal">Добавить сервер</label></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+{% endblock %}
+{% block script %}
+	<input type="checkbox" id="server-modal" class="modal-toggle"/>
+	<div class="modal" id="server-modal">
+		<form action="/server/add" method="POST" encType="multipart/form-data">
+			<div class="w-full max-w-md p-8 bg-bg rounded-2xl relative modal-box">
+				<label for="server-modal" class="text-foxy-orange absolute right-3 top-3 cursor-pointer text-xl">✕</label>
+				<div>
+					<h2 class="text-center text-3xl font-bold tracking-tight text-foxy-orange">Добавить сервер</h2>
+				</div>
+				<div class="pt-4">
+					<input type="text" class="relative block w-full py-2" name="name" placeholder="Название" required>
+				</div>
+				<div>
+					<input type="text" class="relative block w-full py-2" name="version" placeholder="Версия" required>
+				</div>
+				<div>
+					<input type="text" class="relative block w-full py-2" name="ip" placeholder="IP" required>
+				</div>
+				<div>
+					<input type="text" class="relative block w-full py-2" name="port" placeholder="Порт" required>
+				</div>
+				<div>
+					<textarea class="relative block w-full py-2" name="description" placeholder="Описание" required></textarea>
+				</div>
+				<div>
+					<input type="file" name="icon" accept="image/png"/>
+				</div>
+				<div class="flex items-center justify-center text-center my-4">
+					<button class="w-full" type="submit">Подтвердить</button>
+				</div>
+			</div>
+		</form>
 	</div>
 {% endblock %}

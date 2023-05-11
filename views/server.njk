@@ -1,0 +1,103 @@
+{% extends "base.njk" %}
+{% import "./partials/macros.njk" as macros %}
+
+{% block title %}Профиль{% endblock %}
+{% block content %}
+	<div class="lg:mx-12 mx-4 2xl:container h-auto content">
+		<div class="text-gray-400">
+			<img class="w-full sm:w-2/6 float-left aspect-square mr-2" src="{{ server.icon }}"/>
+			<span class="w-4/6 text-foxy-blue">
+				<div class="indicator">
+					<span class="indicator-item indicator-bottom text-foxy-orange">
+						{{ server.version }}
+					</span>
+					<div class="text-2xl md:text-3xl">
+						{{ server.name }}
+					</div>
+				</div>
+			</span>
+			<p>{{ server.description }}</p>
+		</div>
+		{% if server.mods | length > 0 %}
+			<div class="inline-block m-1 pt-2 text-xl">Список модов:</div>
+			<div>
+				{% for mod in server.mods %}
+					{% if mod.type == "1" %}
+						{% set style = "badge-outline border-1 border-[#d8a31e] text-[#d8a31e]" %}
+					{% elif mod.type == "2" %}
+						{% set style = "badge-outline border-1 border-[#a5a5a5] text-[#a5a5a5]" %}
+					{% elif mod.type == "3" %}
+						{% set style = "badge-outline border-1 border-[#278c10] text-[#278c10]" %}
+					{% elif mod.type == "4" %}
+						{% set style = "badge-outline border-1 border-[#cc0202] text-[#cc0202]" %}
+					{% elif mod.type == "5" %}
+						{% set style = "badge-outline border-1 border-[#189187] text-[#189187]" %}
+					{% endif %}
+					<a target="_blank" href="{{ mod.link }}"><span class="badge {{ style }} badge-lg">{{ mod.name }}</span></a>
+				{% endfor %}
+				{% if user %}
+					{% if user.permissions|contains("admin") %}
+						<label class="link" for="select-mod-modal"><span class="badge badge-info badge-lg px-1">Select</span></label>
+						<label class="link" for="add-mod-modal"><span class="badge badge-info badge-lg px-1">Add</span></label>
+					{% endif %}
+				{% endif %}
+				</div>
+		{% endif %}
+	</div>
+{% endblock %}
+{% block script %}
+	<input type="checkbox" id="add-mod-modal" class="modal-toggle"/>
+	<div class="modal" id="add-mod-modal">
+		<form action="/server/addMod" method="POST">
+			<input type="hidden" name="server" value="{{ server.name }}">
+			<div class="w-full max-w-md p-8 bg-bg rounded-2xl relative modal-box">
+				<label for="add-mod-modal" class="text-foxy-orange absolute right-3 top-3 cursor-pointer text-xl">✕</label>
+				<div>
+					<h2 class="text-center text-3xl font-bold tracking-tight text-foxy-orange">Добавить мод</h2>
+				</div>
+				<div class="pt-4">
+					<input type="text" class="relative block w-full py-2" name="name" placeholder="Название" required>
+				</div>
+				<div>
+					<input type="text" class="relative block w-full py-2" name="link" placeholder="Ссылка" required>
+				</div>
+				<div class="pt-4">
+					<select name="type" class="w-full" required>
+						<option disabled selected>Тип мода</option>
+						<option value="1">Глобальный</option>
+						<option value="2">Обынчый</option>
+						<option value="3">Библиотека</option>
+						<option value="4">Аддон</option>
+						<option value="5">Клиентский</option>
+					</select>
+				</div>
+				<div class="flex items-center justify-center text-center my-4">
+					<button class="w-full" type="submit">Подтвердить</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<input type="checkbox" id="select-mod-modal" class="modal-toggle"/>
+	<div class="modal" id="select-mod-modal">
+		<form action="/server/addMod" method="POST">
+			<input type="hidden" name="server" value="{{ server.name }}">
+			<div class="w-full max-w-md p-8 bg-bg rounded-2xl relative modal-box">
+				<label for="select-mod-modal" class="text-foxy-orange absolute right-3 top-3 cursor-pointer text-xl">✕</label>
+				<div>
+					<h2 class="px-6 text-center text-3xl font-bold tracking-tight text-foxy-orange">Выбрать мод</h2>
+				</div>
+				<div class="pt-4">
+					<select name="modName" class="w-full" required>
+						<option disabled selected>Выбрать мод</option>
+						{% for mod in mods %}
+							<option value="{{ mod.name }}">{{ mod.name }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="flex items-center justify-center text-center my-4">
+					<button class="w-full" type="submit">Подтвердить</button>
+				</div>
+			</div>
+		</form>
+	</div>
+{% endblock %}

@@ -2,9 +2,11 @@ node_modules
 .env
 database/storage
 public/css/style.css
-public/img/skin/*.*
+public/img/skin/*
 !public/img/skin/default.png
 !public/img/skin/default_head.png
+public/img/server/*
+!public/img/server/default.png
 public/files
 src/cert/*
 logs/*

@@ -23,6 +23,7 @@ import changeRouter from "./routers/changeRouter.js";
 import recoveryRouter from "./routers/recoveryRouter.js";
 import downloadRouter from "./routers/downloadRouter.js";
 import adminRouter from "./routers/adminRouter.js";
+import serversRouter from "./routers/serversRouter.js";
 
 import { Logger } from "./utils/logger.js";
 
@@ -78,6 +79,7 @@ app.use("/", changeRouter);
 app.use("/", recoveryRouter);
 app.use("/", downloadRouter);
 app.use("/", adminRouter);
+app.use("/", serversRouter);
 
 app.get("*", (req, res) => {
 	return res.render("error");
