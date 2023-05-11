@@ -4,11 +4,11 @@
  - [x] Profile
  - [x] Admin panel
  - [x] Viewing and editing other peoples profiles(as admin)
- - [ ] Captcha
+ - [x] Captcha
  - [ ] Temp mail checking
  - [ ] Server list
- - [ ] Server managment panle(admin)
- - [ ] Server status display
+ - [x] Server managment panle(admin)
+ - [x] Server status display
  - [ ] Rules page
  - [ ] Mobile adaptation
 
