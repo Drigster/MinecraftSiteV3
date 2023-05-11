@@ -12,6 +12,9 @@
     "lint:fix": "npx eslint --fix .",
     "start": "pm2 start index.js"
   },
+  "lint-staged": {
+    "*.js": "npm run lint:fix"
+  },
   "type": "module",
   "repository": {
     "type": "git",
@@ -40,6 +43,7 @@
     "jimp": "^0.22.4",
     "jsonwebtoken": "^9.0.0",
     "jwt-express": "^1.1.0",
+    "lint-staged": "^13.2.2",
     "luxon": "^3.2.1",
     "nodemailer": "^6.9.1",
     "nunjucks": "^3.2.3",
