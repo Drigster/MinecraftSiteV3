@@ -95,7 +95,7 @@ router.post("/server/add", async (req, res) => {
 			name: req.body.name,
 			version: req.body.version,
 			description: req.body.description,
-			status: "disabled",
+			status: 0,
 			mods: [],
 			ip: req.body.ip,
 			port: req.body.port,

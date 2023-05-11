@@ -18,8 +18,27 @@
 			</span>
 			<p>{{ server.description }}</p>
 		</div>
+		<div class="m-1 pt-2 text-xl">Статус: 
+			{% if server.status == 0 %}
+				<span class="text-red-500">
+					Отключен
+				</span>
+			{% elif server.status == 1 %}
+				<span class="text-green-500">
+					Активен
+				</span>
+			{% elif server.status == 2 %}
+				<span class="text-yellow-400">
+					Архивирован
+				</span>
+			{% else %}
+				<span class="text-red-500">
+					Неизвестно
+				</span>
+			{% endif %}
+		</div>
 		{% if server.mods | length > 0 %}
-			<div class="inline-block m-1 pt-2 text-xl">Список модов:</div>
+			<div class="m-1 pt-2 text-xl">Список модов:</div>
 			<div>
 				{% for mod in server.mods %}
 					{% if mod.type == "1" %}

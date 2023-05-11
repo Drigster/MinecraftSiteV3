@@ -15,6 +15,7 @@ import { initDB } from "./database/surreal.js";
 import FlashMessages from "./middleware/NunjucksGlobals.js";
 import Timer from "./middleware/timer.js";
 import Logs from "./middleware/logs.js";
+import Servers from "./middleware/servers.js";
 import ErrorHandler from "./middleware/errorHandler.js";
 import authRouter from "./routers/authRouter.js";
 import apiRouter from "./routers/apiRouter.js";
@@ -67,6 +68,7 @@ env.addFilter("dateString", function(str) {
 app.use(Timer);
 app.use(FlashMessages);
 app.use(Logs);
+app.use(Servers);
 	
 app.get("/", (req, res) => {
 	return res.render("index");

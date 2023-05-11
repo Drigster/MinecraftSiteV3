@@ -2,21 +2,30 @@
     <div class="flex flex-col flex-1 items-center justify-center">
         <div>
             <a class="inline-block" href="/">
-                <h1 class="p-8" >DisePVP</h1>
+                <h1 class="pt-8 pb-2" >DisePVP</h1>
             </a>
         </div>
-        <div class="pb-4 flex gap-2">
-            {#<div class="w-56 flex justify-between bg-bg p-2 rounded-xl">
-                <div class="inline-block">
-                    <div>All of Fabric 5</div>
-                    <div class="text-[0.65rem]">1.18</div>
-                </div>
-                <div class="inline-block ml-4">
-                    <div class="text-center">2</div>
-                    <div class="text-[0.65rem]">из 30</div>
-                </div>
-            </div>#}
-        </div>
+        {% if servers %}
+            <div class="pb-4 flex gap-2">
+                {% for server in servers %}
+                    {% if server.status == 0 %}
+                        <a class="server" href="/server/{{ server.name }}" data-ip="{{ server.ip }}" data-port="{{ server.port }}">
+                            <div class="bg-bg p-2 rounded-xl">
+                                <div class="w-48 inline-block">
+                                    <div class="truncate">{{ server.name }}</div>
+                                    <div class="text-[0.65rem]">{{ server.version }}</div>
+                                </div>
+                                <div class="inline-block ml-1">
+                                    <div class="text-center server-online">0</div>
+                                    <div class="text-[0.65rem]">из <span class="server-max-online">0</span></div>
+                                </div>
+                            </div>
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <script src="/js/statusUpdater.js"></script>
+        {% endif %}
     </div>
     <div class="absolute bottom-0 right-0 mr-1">
         <a class="inline-block mr-1 rounded-full" href="https://discord.com/invite/UHcujd4" target="_blank">
