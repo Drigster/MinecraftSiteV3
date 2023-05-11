@@ -15,7 +15,17 @@
 			{% block content %}{% endblock %}
 		</div>
 		<div class="toast toast-top toast-end">
-			{% block alert %}{% endblock %}
+			{% block alert %}
+				{% if error %}
+					{{ macros.alert_error(error) }}
+				{% endif %}
+				{% if success %}
+					{{ macros.alert_success(success) }}
+				{% endif %}
+				{% if message %}
+					{{ macros.alert_info(message) }}
+				{% endif %}
+			{% endblock %}
 		</div>
 		{% block script %}{% endblock %}
 	</body>

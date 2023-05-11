@@ -148,14 +148,3 @@
 		</form>
 	</div>
 {% endblock %}
-{% block alert %}
-	{% if error %}
-		{{ macros.alert_error(error) }}
-	{% endif %}
-	{% if success %}
-		{{ macros.alert_success(success) }}
-	{% endif %}
-	{% if message %}
-		{{ macros.alert_info(message) }}
-	{% endif %}
-{% endblock %}

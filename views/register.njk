@@ -68,11 +68,3 @@
 		}
 	</script>
 {% endblock %}
-{% block alert %}
-	{% if error %}
-		{{ macros.alert_error(error) }}
-	{% endif %}
-	{% if message %}
-		{{ macros.alert_info(message) }}
-	{% endif %}
-{% endblock %}
