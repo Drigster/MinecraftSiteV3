@@ -5,7 +5,7 @@
  - [x] Admin panel
  - [x] Viewing and editing other peoples profiles(as admin)
  - [x] Captcha
- - [ ] Temp mail checking
+ - [X] Temp mail checking
  - [ ] Server list
  - [x] Server managment panle(admin)
  - [x] Server status display
