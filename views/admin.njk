@@ -5,54 +5,60 @@
 	<div class="lg:mx-12 mx-4 2xl:container h-auto content">
 		<div>
 			<p>Игроки: </p>
-			<table class="table table-compact w-full rounded-tl-none">
-				<tr>
-					<th>Username</th>
-					<th>Email</th>
-					<th>Status</th>
-					<th>Last Played</th>
-				</tr>
-				{% for user in users %}
-					<tr>
-						<td><a class="link" href="/profile/{{ user.username }}">{{ user.username }}</a></td>
-						<td>{{ user.email }}</td>
-						{% if user.extras.banned %}
-							<td class="text-red-500">Забанен</td>
-						{% elif user.verified %}
-							<td class="text-green-500">Верифицирован</td>
-						{% else %}
-							<td class="text-yellow-400">Не верифицирован</td>
-						{% endif %}
-						<td>{{ user.info.lastPlayed }}</td>
-					</tr>
-				{% endfor %}
-			</table>
-		</div>
-		<div class="mt-2">
-		<div class="grid grid-cols-12 gap-2">
-			<div class="col-span-6">
-				<p>Сервера: </p>
-			</div>
-			<div class="col-span-6">
+			<div class="overflow-x-auto">
+				<table class="table table-xs table-pin-rows w-full">
+					<thead>
+						<tr>
+							<th>Username</th>
+							<th>Email</th>
+							<th>Status</th>
+							<th>Last Played</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for user in users %}
+							<tr>
+								<td><a class="link" href="/profile/{{ user.username }}">{{ user.username }}</a></td>
+								<td>{{ user.email }}</td>
+								{% if user.extras.banned %}
+									<td class="text-red-500">Забанен</td>
+								{% elif user.verified %}
+									<td class="text-green-500">Верифицирован</td>
+								{% else %}
+									<td class="text-yellow-400">Не верифицирован</td>
+								{% endif %}
+								<td>{{ user.info.lastPlayed }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
 			</div>
 		</div>
-			<table class="table table-compact w-full rounded-tl-none">
-				<tr>
-					<th>Name</th>
-					<th>Version</th>
-					<th>Status</th>
-				</tr>
-				{% for server in servers %}
-					<tr>
-						<td><a class="link" href="/server/{{ server.name }}">{{ server.name }}</a></td>
-						<td>{{ server.version }}</td>
-						<td>{{ server.status }}</td>
-					</tr>
-				{% endfor %}
-				<tr>
-					<td colspan="3" class="text-center"><label class="link" for="server-modal">Добавить сервер</label></td>
-				</tr>
-			</table>
+		<div>
+			<p>Сервера: </p>
+			<div class="overflow-x-auto">
+				<table class="table table-xs table-pin-rows w-full">
+    				<thead>
+						<tr>
+							<th>Name</th>
+							<th>Version</th>
+							<th>Status</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for server in servers %}
+							<tr>
+								<td><a class="link" href="/server/{{ server.name }}">{{ server.name }}</a></td>
+								<td>{{ server.version }}</td>
+								<td>{{ server.status }}</td>
+							</tr>
+						{% endfor %}
+						<tr>
+							<td colspan="3" class="text-center"><label class="link" for="server-modal">Добавить сервер</label></td>
+						</tr>
+    				</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 {% endblock %}

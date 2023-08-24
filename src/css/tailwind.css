@@ -68,7 +68,8 @@
         @apply bg-bg;
         @apply rounded-2xl;
         @apply my-4;
-        @apply p-8;
+        @apply p-4;
+        @apply md:p-8;
         @apply flex-1;
     }
 
