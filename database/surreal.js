@@ -39,25 +39,18 @@ export async function initDB() {
 		if (!db_user || !db_pass) {
 			throw new Error("DB_USERNAME or DB_PASSWORD not set");
 		}
-		await db.connect(db_url)
-			.then(() => {
-				logger.log("INFO", "Connected to database");
-			})
-			.catch((err) => {
-				logger.log("ERROR", "Error connecting to database", err);
-			});
 		await db.signin({
 			user: db_user,
 			pass: db_pass,
 		})
-			.then((res) => {
-				logger.log("INFO", "Signed in to database", res);
-			})
-			.catch((err) => {
-				logger.log("ERROR", "Error signing in to database", err);
-			});
-        
-		await db.use("dice", "dice");
+		.then((res) => {
+			logger.log("INFO", "Signed in to database", res);
+		})
+		.catch((err) => {
+			logger.log("ERROR", "Error signing in to database", err);
+		});
+
+		await db.use({ns: 'dice', db: 'dice'});
 
 		const users = await db.select("user");
 		if(users.length == 0){

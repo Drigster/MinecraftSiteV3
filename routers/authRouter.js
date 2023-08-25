@@ -147,7 +147,7 @@ router.get("/verify/:token", async (req, res) => {
 	else{
 		const user = await db.queryFirst(`SELECT * FROM user WHERE email = "${verifyToken.email}"`);
 		if(user){
-			const newUser = await db.change(user.id, {
+			const newUser = await db.merge(user.id, {
 				verified: true
 			});
 			res.jwt({

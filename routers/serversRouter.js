@@ -116,7 +116,7 @@ router.post("/server/addMod", async (req, res) => {
 		logger.log(server);
 		logger.log(server.mods);
 		server.mods.push(mod.id);
-		await db.change("server", {
+		await db.merge("server", {
 			mods: server.mods
 		});
 		return res.redirect(`/server/${server.name}`);
@@ -129,7 +129,7 @@ router.post("/server/addMod", async (req, res) => {
 			type: req.body.type
 		});
 		server.mods.push(mod.id);
-		await db.change("server", {
+		await db.merge("server", {
 			mods: server.mods
 		});
 		return res.redirect(`/server/${server.name}`);

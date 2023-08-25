@@ -29,12 +29,12 @@ router.post("/api/auth/authorize", async (req, res) => {
 					const fakeUser = await db.queryFirst(`SELECT * FROM user WHERE username = "${user.extras.fakeUsername}"`);
 					logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} is faked to ${user.extras.fakeUsername}!`);
 					if(fakeUser){
-						await db.change(`${fakeUser.id}`, {
+						await db.merge(`${fakeUser.id}`, {
 							session: `${session.id}`
 						});
 					}
 					else{
-						await db.change(`${user.id}`, {
+						await db.merge(`${user.id}`, {
 							session: `${session.id}`,
 							info: {
 								lastPlayed: Date.now()
@@ -43,7 +43,7 @@ router.post("/api/auth/authorize", async (req, res) => {
 					}
 				}
 				else {
-					await db.change(`${user.id}`, {
+					await db.merge(`${user.id}`, {
 						session: `${session.id}`,
 						info: {
 							lastPlayed: Date.now()
@@ -84,7 +84,7 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
 	const user = await db.queryFirst(`SELECT * FROM "${session.user}"`);
 	if (session) {
 		const login = user.extras?.fakeUsername ? user.extras.fakeUsername : user.username;
-		await db.change(`${user.id}`, {
+		await db.merge(`${user.id}`, {
 			extras: {
 				fakeUsername: null
 			}
@@ -197,7 +197,7 @@ router.get("/api/user/current", async (req, res) => {
 				"user": await userData.json(),
 				"expireIn": session.expires
 			};
-			await db.change(`${user.id}`, {
+			await db.merge(`${user.id}`, {
 				session: `${session.id}`,
 				info: {
 					lastPlayed: Date.now()
@@ -236,7 +236,7 @@ router.post("/api/server/joinServer", async (req, res) => {
 	if (user) {
 		const session = await db.queryFirst(`SELECT * FROM "${user.session}"`);
 		if(session && (session.token == req.body.accessToken)){
-			await db.change(`${user.id}`, {
+			await db.merge(`${user.id}`, {
 				serverId: req.body.serverId
 			});
 			logger.log("DEBUG", `[/api/server/joinServer] User ${req.body.username} added serverId!`);

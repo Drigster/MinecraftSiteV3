@@ -87,7 +87,7 @@ router.post("/recovery/password/:token", async (req, res) => {
 			req.session.error = "Пароли не совподают!";
 		}
 		else{
-			await db.change(user.id, {
+			await db.merge(user.id, {
 				password: await bcrypt.hash(req.body.newpassword, 10)
 			});
 			req.jwt.revoke();

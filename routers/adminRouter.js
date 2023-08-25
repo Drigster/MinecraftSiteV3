@@ -24,7 +24,7 @@ router.post("/admin/ban", async (req, res) => {
 	}
 	const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
 	if(user){
-		await db.change(user.id, {
+		await db.merge(user.id, {
 			extras: {
 				banned: true
 			}
@@ -39,7 +39,7 @@ router.post("/admin/unban", async (req, res) => {
 	}
 	const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
 	if(user){
-		await db.change(user.id, {
+		await db.merge(user.id, {
 			extras: {
 				banned: false
 			}
@@ -54,7 +54,7 @@ router.post("/admin/verify", async (req, res) => {
 	} 
 	const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
 	if(user){
-		await db.change(user.id, {
+		await db.merge(user.id, {
 			verified: true
 		});
 	}
@@ -67,7 +67,7 @@ router.post("/admin/fake", async (req, res) => {
 	} 
 	const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
 	if(user){
-		await db.change(user.id, {
+		await db.merge(user.id, {
 			extras: {
 				fakeUsername: req.body.fakeUsername
 			}

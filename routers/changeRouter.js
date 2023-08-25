@@ -24,7 +24,7 @@ router.post("/api/change/username", async (req, res) => {
 			req.session.error = "Пароль не верен!";
 		}
 		else{
-			let newUser = await db.change(user.id, {
+			let newUser = await db.merge(user.id, {
 				username: req.body.newusername
 			});
 			delete newUser.password;
@@ -58,7 +58,7 @@ router.post("/api/change/email", async (req, res) => {
 			req.session.error = "Пароль не верен!";
 		}
 		else{
-			let newUser = await db.change(user.id, {
+			let newUser = await db.merge(user.id, {
 				email: req.body.newemail,
 				verified: false
 			});
