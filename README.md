@@ -10,7 +10,7 @@
  - [x] Server managment panle(admin)
  - [x] Server status display
  - [ ] Rules page
- - [ ] Mobile adaptation
+ - [X] Mobile adaptation
 
 #### Geting started
 
