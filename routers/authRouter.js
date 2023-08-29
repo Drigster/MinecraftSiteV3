@@ -102,11 +102,11 @@ router.post("/login", async (req, res) => {
 
 	if (!success) {
 		req.session.error = "Каптча не пройдена!";
-		return res.redirect("register");
+		return res.redirect("login");
 	}
 	if(!req.body.username && !req.body.password){
 		req.session.error = "Пожалуйста заполните все поля!";
-		return res.redirect("register");
+		return res.redirect("login");
 	}
 	const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
 	if(!user){
