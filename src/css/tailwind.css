@@ -71,6 +71,8 @@
         @apply p-4;
         @apply md:p-8;
         @apply flex-1;
+        @apply mx-2;
+        @apply sm:container;
     }
 
     ol {
