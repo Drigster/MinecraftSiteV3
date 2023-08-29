@@ -74,6 +74,64 @@ export async function initDB() {
 					logger.log("INFO", "Created default user", res);
 				});
 		}
+		if(users.length < 5){
+			await db.create("user", {
+				uuid: "acc7e195-b04e-44a6-9621-76fce732e29e",
+				username: "test1",
+				password: await bcrypt.hashSync("test1", 10),
+				email: "test1@test.test",
+				verified: true,
+				permissions: [
+					"user",
+				],
+				info: {
+					regDate: Date.now(),
+					lastPlayed: -1
+				}
+			})
+			await db.create("user", {
+				uuid: "2b59383f-8ede-4772-a258-d97237443036",
+				username: "test2",
+				password: await bcrypt.hashSync("test2", 10),
+				email: "test2@test.test",
+				verified: true,
+				permissions: [
+					"user",
+				],
+				info: {
+					regDate: Date.now(),
+					lastPlayed: -1
+				}
+			})
+			await db.create("user", {
+				uuid: "d6cfc5f0-cbc3-42f1-a625-3d74b0e0c09c",
+				username: "test3",
+				password: await bcrypt.hashSync("test3", 10),
+				email: "test3@test.test",
+				verified: true,
+				permissions: [
+					"user",
+				],
+				info: {
+					regDate: Date.now(),
+					lastPlayed: -1
+				}
+			})
+			await db.create("user", {
+				uuid: "af3b613c-5e39-4f71-90af-c2763e140438",
+				username: "test4",
+				password: await bcrypt.hashSync("test4", 10),
+				email: "test4@test.test",
+				verified: true,
+				permissions: [
+					"user",
+				],
+				info: {
+					regDate: Date.now(),
+					lastPlayed: -1
+				}
+			})
+		}
 	} catch (err) {
 		logger.log("ERROR", err);
 	}
