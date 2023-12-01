@@ -6,8 +6,8 @@
   "scripts": {
     "db": "surreal start --bind 127.0.0.1:8001 --user root --pass root file:./database/storage",
     "dev": "npx nodemon .",
-    "tailwind": "npx tailwindcss -i ./src/css/tailwind.css -o ./public/css/style.css --watch",
-    "tailwind:watch": "npx tailwindcss -i ./src/css/tailwind.css -o ./public/css/style.css",
+    "tailwind": "npx tailwindcss -i ./src/css/tailwind.css -o ./public/css/style.css",
+    "tailwind:watch": "npx tailwindcss -i ./src/css/tailwind.css -o ./public/css/style.css --watch",
     "livereload": "npx livereload . -ee njk",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
