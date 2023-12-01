@@ -12,18 +12,18 @@ const router = express.Router();
 router.post("/api/auth/authorize", async (req, res) => {
 	const user = (await db.query(`SELECT * FROM user WHERE username = "${req.body.login}"`))[0];
 	if (user) {
-		if (await bcrypt.compare(req.body.password.password, user.password)) {
+		if (await bcrypt.compare(req.body.password, user.password)) {
 			if(user.verified && !user.extras?.banned){
 				if (user.session) {
 					logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} session exists, deleting!`);
 					await db.query(`DELETE session WHERE user.id = ${user.id}`);
 				}
 				const token = getRandomString(16);
-				const session = await db.create("session", {
+				const session = (await db.create("session", {
 					token: `${token}`,
 					user: `${user.id}`,
 					expires: (Date.now() + 60 * 60 * 1000)
-				});
+				}))[0];
 				logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} session created: ${session.id}!`);
 				if(user.extras?.fakeUsername){
 					const fakeUser = (await db.query(`SELECT * FROM user WHERE username = "${user.extras.fakeUsername}"`))[0];
@@ -51,16 +51,9 @@ router.post("/api/auth/authorize", async (req, res) => {
 					});
 					logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} assigned session!`);
 				}
-				const HttpUserSession = await fetch(`${req.protocol}://${req.hostname}/api/user/token/${session.token}`);
-				const AuthReport = {
-					"minecraftAccessToken": session.token,
-					"oauthAccessToken": session.token,
-					"oauthRefreshToken": 0,
-					"oauthExpire": 0,
-					"session": await HttpUserSession.json()
-				};
-				logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} returning AuthReport: ${JSON.stringify(AuthReport)}`);
-				return res.status(200).json(AuthReport);
+				const UserSession = await (await fetch(`${req.protocol}://${req.hostname}/api/user/token/${session.token}`)).json();
+				logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} returning UserSession: ${JSON.stringify(UserSession)}`);
+				return res.status(200).json(UserSession);
 			}
 			else {
 				logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} is blocked!`);
@@ -95,29 +88,27 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
 		const HttpUser = {
 			"username": login,
 			"uuid": user.uuid,
-			"accessToken": session.token,
-			"permissions": {
-				"perms": [],
-				"roles": [
-					"PLAYER"
-				]
-			},
+			"permissions": [],
+			"roles": [
+				"PLAYER"
+			],
 			"assets": {
 				"SKIN": {
 					"url": `${req.protocol}://${req.hostname}/api/skin/${user.uuid}.png`,
 					"digest": digest,
 					"metadata": {}
-				},
-				"CAPE": {}
+				}
 			}
 		};
-		const HttpUserSession = {
+		const UserSession = {
 			"id": session.id.split(":")[1],
+			"accessToken": session.token,
+			"refreshToken": 0,
 			"user": HttpUser,
-			"expireIn": session.expires
+			"expire": session.expires
 		};
-		logger.log("DEBUG", `[/api/user/token/:sessionToken] Session ${token} returning HttpUserSession: ${JSON.stringify(HttpUserSession)}`);
-		return res.status(200).json(HttpUserSession);
+		logger.log("DEBUG", `[/api/user/token/:sessionToken] Session ${token} returning UserSession: ${JSON.stringify(UserSession)}`);
+		return res.status(200).json(UserSession);
 	}
 	else {
 		logger.log("DEBUG", `[/api/user/token/:sessionToken] Session ${token} not found!`);
@@ -127,29 +118,24 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
 
 // getUserByUsernameUrl
 router.get("/api/user/name/:username", async (req, res) => {
-	const user = await (db.queryFirst(`SELECT * FROM user WHERE username = "${req.params.username}"`));
+	const user = await (await db.query(`SELECT * FROM user WHERE username = "${req.params.username}"`))[0];
 	if (user) {
-		const session = (await db.query(`SELECT * FROM session WHERE user = "${user.id}"`))[0];
 		const response = await fetch(`${req.protocol}://${req.hostname}/api/skin/${user.uuid}`);
 		const md5Hash = CryptoJS.MD5(response).toString();
 		const digest = CryptoJS.enc.Base64.parse(md5Hash).toString();
 		const userData = {
 			"username": user.username,
 			"uuid": user.uuid,
-			"accessToken": session.token,
-			"permissions": {
-				"perms": [],
-				"roles": [
-					"PLAYER"
-				]
-			},
+			"permissions": [],
+			"roles": [
+				"PLAYER"
+			],
 			"assets": {
 				"SKIN": {
 					"url": `${req.protocol}://${req.hostname}/api/skin/${user.uuid}.png`,
 					"digest": digest,
 					"metadata": {}
-				},
-				"CAPE": {}
+				}
 			}
 		};
 		logger.log("DEBUG", `[/api/user/name/:username] User ${req.params.username} returning UserData: ${JSON.stringify(userData)}`);
@@ -160,13 +146,6 @@ router.get("/api/user/name/:username", async (req, res) => {
 		logger.log("DEBUG", `[/api/user/name/:username] User ${req.params.username} not found!`);
 		return res.status(404).json({ error: "auth.usernotfound" });
 	}
-});
-
-// getUserByLoginUrl
-router.get("/api/user/login/:login", async (req, res) => {
-	const userData = await fetch(`${req.protocol}://${req.hostname}/api/user/name/${req.params.login}`);
-	logger.log("DEBUG", `[/api/user/login/:login] User ${req.params.login} returning UserData: ${JSON.stringify(await userData.json())}`);
-	return res.status(200).json(await userData.json());
 });
 
 // getUserByUUIDUrl
@@ -184,68 +163,28 @@ router.get("/api/user/uuid/:uuid", async (req, res) => {
 });
 
 // getUserByTokenUrl
-router.get("/api/user/current", async (req, res) => {
-	let token = req.get("Authorization");
-	token = token.split(" ");
-	if (token[0] == "Bearer") {
-		const session = (await db.query(`SELECT * FROM session WHERE token = "${token[1]}"`))[0];
-		if (session) {
-			const user = (await db.query(`SELECT * FROM "${session.user}"`))[0];
-			const userData = await fetch(`${req.protocol}://${req.hostname}/api/user/name/${user.username}`);
-			const HttpUserSession = {
-				"id": session.id.split(":")[1],
-				"user": await userData.json(),
-				"expireIn": session.expires
-			};
-			await db.merge(`${user.id}`, {
-				session: `${session.id}`,
-				info: {
-					lastPlayed: Date.now()
-				},
-			});
-			logger.log("DEBUG", `[/api/user/current] Session with token ${token[1]} returning HttpUserSession: ${JSON.stringify(HttpUserSession)}`);
-			return res.status(200).json(HttpUserSession);
-		}
-		else {
-			logger.log("DEBUG", `[/api/user/current] Session with token ${token[1]} not found!`);
-			return res.status(404).json({ error: "auth.usernotfound" });
-		}
-	}
-	else {
-		logger.log("DEBUG", "[/api/user/current] Token is expected!");
-		return res.status(200).json({ error: "auth.invalidtoken" });
-	}
-});
-
-// getAuthDetails
-router.get("/api/auth/details", async (req, res) => {
-	const details = {
-		"details": [
-			{
-				"type": "password"
-			}
-		]
-	};
-	logger.log("DEBUG", `[/api/auth/details] Returning AuthDetails: ${JSON.stringify(details)}`);
-	return res.status(200).json(details);
+router.post("/api/user/current", async (req, res) => {
+	const UserSession = await (await fetch(`${req.protocol}://${req.hostname}/api/user/token/${req.body.accessToken}`)).json();
+	logger.log("DEBUG", `[/api/user/current] Token ${req.body.accessToken} returning UserSession: ${JSON.stringify(UserSession)}`);
+	return res.status(200).json(UserSession);
 });
 
 // joinServerUrl
 router.post("/api/server/joinServer", async (req, res) => {
-	const user = (await db.query(`SELECT * FROM user WHERE username = "${req.body.username}"`))[0];
+	const user = (await db.query(`SELECT * FROM user WHERE uuid = "${req.body.uuid}"`))[0];
 	if (user) {
 		const session = (await db.query(`SELECT * FROM "${user.session}"`))[0];
 		if(session && (session.token == req.body.accessToken)){
 			await db.merge(`${user.id}`, {
 				serverId: req.body.serverId
 			});
-			logger.log("DEBUG", `[/api/server/joinServer] User ${req.body.username} added serverId!`);
+			logger.log("DEBUG", `[/api/server/joinServer] User ${user.username} added serverId!`);
 		}
 	}
 	else{
-		logger.log("DEBUG", `[/api/server/joinServer] User ${req.body.username} not found!`);
+		logger.log("DEBUG", `[/api/server/joinServer] User ${user.username} not found!`);
 	}
-	return res.status(200).json();
+	return res.status(200).json({});
 });
 
 // checkServerUrl
@@ -254,11 +193,11 @@ router.post("/api/server/checkServer", async (req, res) => {
 	if(user){
 		if(user.serverId == req.body.serverId){
 			const userData = await (await fetch(`${req.protocol}://${req.hostname}/api/user/name/${user.username}`)).json();
-			logger.log("DEBUG", `[/api/server/checkServer] User ${req.body.username} returning UserData: ${JSON.stringify(userData)}`);
+			logger.log("DEBUG", `[/api/server/checkServer] User ${user.username} returning UserData: ${JSON.stringify(userData)}`);
 			return res.status(200).json(userData);
 		}
 		else{
-			logger.log("DEBUG", `[/api/server/checkServer] User ${req.body.username} server Ids are different: ${user.serverId} != ${req.body.serverId}!`);
+			logger.log("DEBUG", `[/api/server/checkServer] User ${user.username} server Ids are different: ${user.serverId} != ${req.body.serverId}!`);
 			return res.status(404).json({ error: "auth.usernotfound" });
 		}
 	}
