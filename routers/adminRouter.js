@@ -1,5 +1,4 @@
 import express from "express";
-import { SkinViewer } from "skinview3d";
 
 import db from "../database/surreal.js";
 
@@ -22,7 +21,7 @@ router.post("/admin/ban", async (req, res) => {
 	if(!req.jwt.payload.user.permissions.includes("admin")){
 		return res.render("error");
 	}
-	const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
+	const user = (await db.query(`SELECT * FROM user WHERE username = "${req.body.username}"`))[0];
 	if(user){
 		await db.merge(user.id, {
 			extras: {
@@ -37,7 +36,7 @@ router.post("/admin/unban", async (req, res) => {
 	if(!req.jwt.payload.user.permissions.includes("admin")){
 		return res.render("error");
 	}
-	const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
+	const user = (await db.query(`SELECT * FROM user WHERE username = "${req.body.username}"`))[0];
 	if(user){
 		await db.merge(user.id, {
 			extras: {
@@ -52,7 +51,7 @@ router.post("/admin/verify", async (req, res) => {
 	if(!req.jwt.payload.user.permissions.includes("admin")){
 		return res.render("error");
 	} 
-	const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
+	const user = (await db.query(`SELECT * FROM user WHERE username = "${req.body.username}"`))[0];
 	if(user){
 		await db.merge(user.id, {
 			verified: true
@@ -65,7 +64,7 @@ router.post("/admin/fake", async (req, res) => {
 	if(!req.jwt.payload.user.permissions.includes("admin")){
 		return res.render("error");
 	} 
-	const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
+	const user = (await db.query(`SELECT * FROM user WHERE username = "${req.body.username}"`))[0];
 	if(user){
 		await db.merge(user.id, {
 			extras: {
@@ -80,9 +79,9 @@ router.get("/profile/:user", async (req, res) => {
 	if(!req.jwt.payload.user.permissions.includes("admin")){
 		return res.render("error");
 	}
-	const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.params.user}" OR username = "${req.params.user}"`);
+	const user = (await db.query(`SELECT * FROM user WHERE uuid = "${req.params.user}" OR username = "${req.params.user}"`))[0];
 	if(user){
-		return res.render("adminProfile", { SkinViewer: SkinViewer, user: user });
+		return res.render("adminProfile", { user: user });
 	}
 	else {
 		return res.render("error");

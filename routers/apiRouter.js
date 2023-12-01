@@ -10,7 +10,7 @@ const router = express.Router();
 
 // authorizeUrl
 router.post("/api/auth/authorize", async (req, res) => {
-	const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.login}"`);
+	const user = (await db.query(`SELECT * FROM user WHERE username = "${req.body.login}"`))[0];
 	if (user) {
 		if (await bcrypt.compare(req.body.password.password, user.password)) {
 			if(user.verified && !user.extras?.banned){
@@ -26,7 +26,7 @@ router.post("/api/auth/authorize", async (req, res) => {
 				});
 				logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} session created: ${session.id}!`);
 				if(user.extras?.fakeUsername){
-					const fakeUser = await db.queryFirst(`SELECT * FROM user WHERE username = "${user.extras.fakeUsername}"`);
+					const fakeUser = (await db.query(`SELECT * FROM user WHERE username = "${user.extras.fakeUsername}"`))[0];
 					logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} is faked to ${user.extras.fakeUsername}!`);
 					if(fakeUser){
 						await db.merge(`${fakeUser.id}`, {
@@ -80,8 +80,8 @@ router.post("/api/auth/authorize", async (req, res) => {
 
 router.get("/api/user/token/:sessionToken", async (req, res) => {
 	const token = req.params.sessionToken;
-	const session = await db.queryFirst(`SELECT * FROM session WHERE token = "${token}"`);
-	const user = await db.queryFirst(`SELECT * FROM "${session.user}"`);
+	const session = (await db.query(`SELECT * FROM session WHERE token = "${token}"`))[0];
+	const user = (await db.query(`SELECT * FROM "${session.user}"`))[0];
 	if (session) {
 		const login = user.extras?.fakeUsername ? user.extras.fakeUsername : user.username;
 		await db.merge(`${user.id}`, {
@@ -129,7 +129,7 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
 router.get("/api/user/name/:username", async (req, res) => {
 	const user = await (db.queryFirst(`SELECT * FROM user WHERE username = "${req.params.username}"`));
 	if (user) {
-		const session = await db.queryFirst(`SELECT * FROM session WHERE user = "${user.id}"`);
+		const session = (await db.query(`SELECT * FROM session WHERE user = "${user.id}"`))[0];
 		const response = await fetch(`${req.protocol}://${req.hostname}/api/skin/${user.uuid}`);
 		const md5Hash = CryptoJS.MD5(response).toString();
 		const digest = CryptoJS.enc.Base64.parse(md5Hash).toString();
@@ -171,7 +171,7 @@ router.get("/api/user/login/:login", async (req, res) => {
 
 // getUserByUUIDUrl
 router.get("/api/user/uuid/:uuid", async (req, res) => {
-	const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.params.uuid}"`);
+	const user = (await db.query(`SELECT * FROM user WHERE uuid = "${req.params.uuid}"`))[0];
 	if(user){
 		const userData = await (await fetch(`${req.protocol}://${req.hostname}/api/user/name/${user.username}`)).json();
 		logger.log("DEBUG", `[/api/user/uuid/:uuid] User ${req.params.uuid} returning UserData: ${JSON.stringify(userData)}`);
@@ -188,9 +188,9 @@ router.get("/api/user/current", async (req, res) => {
 	let token = req.get("Authorization");
 	token = token.split(" ");
 	if (token[0] == "Bearer") {
-		const session = await db.queryFirst(`SELECT * FROM session WHERE token = "${token[1]}"`);
+		const session = (await db.query(`SELECT * FROM session WHERE token = "${token[1]}"`))[0];
 		if (session) {
-			const user = await db.queryFirst(`SELECT * FROM "${session.user}"`);
+			const user = (await db.query(`SELECT * FROM "${session.user}"`))[0];
 			const userData = await fetch(`${req.protocol}://${req.hostname}/api/user/name/${user.username}`);
 			const HttpUserSession = {
 				"id": session.id.split(":")[1],
@@ -232,9 +232,9 @@ router.get("/api/auth/details", async (req, res) => {
 
 // joinServerUrl
 router.post("/api/server/joinServer", async (req, res) => {
-	const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
+	const user = (await db.query(`SELECT * FROM user WHERE username = "${req.body.username}"`))[0];
 	if (user) {
-		const session = await db.queryFirst(`SELECT * FROM "${user.session}"`);
+		const session = (await db.query(`SELECT * FROM "${user.session}"`))[0];
 		if(session && (session.token == req.body.accessToken)){
 			await db.merge(`${user.id}`, {
 				serverId: req.body.serverId
@@ -250,7 +250,7 @@ router.post("/api/server/joinServer", async (req, res) => {
 
 // checkServerUrl
 router.post("/api/server/checkServer", async (req, res) => {
-	const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
+	const user = (await db.query(`SELECT * FROM user WHERE username = "${req.body.username}"`))[0];
 	if(user){
 		if(user.serverId == req.body.serverId){
 			const userData = await (await fetch(`${req.protocol}://${req.hostname}/api/user/name/${user.username}`)).json();

@@ -2,7 +2,6 @@ import express from "express";
 import { v4 as uuid } from "uuid";
 import bcrypt from "bcrypt";
 import jwt from "jwt-express";
-import { SkinViewer } from "skinview3d";
 import dotenv from "dotenv";
 import verifier from "captcha-verifier";
 import EmailValidator from "deep-email-validator";
@@ -35,8 +34,8 @@ router.post("/register", async (req, res) => {
 		req.session.error = "Пожалуйста заполните все поля!";
 		return res.redirect("register");
 	}
-	const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
-	const emailCheck = await db.queryFirst(`SELECT * FROM user WHERE email = "${req.body.email}"`);
+	const user = (await db.query(`SELECT * FROM user WHERE username = "${req.body.username}"`))[0];
+	const emailCheck = (await db.query(`SELECT * FROM user WHERE email = "${req.body.email}"`))[0];
     
 	const emailStatus = await EmailValidator.validate(`${req.body.email}`);
 
@@ -108,7 +107,8 @@ router.post("/login", async (req, res) => {
 		req.session.error = "Пожалуйста заполните все поля!";
 		return res.redirect("login");
 	}
-	const user = await db.queryFirst(`SELECT * FROM user WHERE username = "${req.body.username}"`);
+	const user = (await db.query(`SELECT * FROM user WHERE username = "${req.body.username}"`))[0];
+	console.log(user);
 	if(!user){
 		req.session.error = "Пользователь не найден!";
 	}
@@ -130,7 +130,7 @@ router.get("/profile", (req, res) => {
 	if(!req.jwt.valid){
 		return res.redirect("login");
 	}
-	return res.render("profile", { SkinViewer: SkinViewer });
+	return res.render("profile");
 });
 
 router.get("/logout", (req, res) => {
@@ -145,7 +145,7 @@ router.get("/verify/:token", async (req, res) => {
 		return res.render("info", { title: "Ошибка!", message: "Токен истёк или не верен. Попробуйте повторить верефикацию." });
 	}
 	else{
-		const user = await db.queryFirst(`SELECT * FROM user WHERE email = "${verifyToken.email}"`);
+		const user = (await db.query(`SELECT * FROM user WHERE email = "${verifyToken.email}"`))[0];
 		if(user){
 			const newUser = await db.merge(user.id, {
 				verified: true

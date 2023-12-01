@@ -1,33 +1,24 @@
+{% extends "html.njk" %}
 {% import "./partials/macros.njk" as macros %}
 
-<!DOCTYPE html>
-<html>
-	<head>
-		<link href="/css/style.css" rel="stylesheet">
-  		<link rel="icon" type="image/x-icon" href="/img/favicon.ico">
-    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>{% block title %}{% endblock %} - DisePVP</title>
-		{% block head %}{% endblock %}
-	</head>
-	<body>
-		<div class="body">
-			{% include "./partials/header.njk" %}
-			{% include "./partials/nav.njk" %}
-			{% block content %}{% endblock %}
-		</div>
-		<div class="toast toast-top toast-end">
-			{% block alert %}
-				{% if error %}
-					{{ macros.alert_error(error) }}
-				{% endif %}
-				{% if success %}
-					{{ macros.alert_success(success) }}
-				{% endif %}
-				{% if message %}
-					{{ macros.alert_info(message) }}
-				{% endif %}
-			{% endblock %}
-		</div>
-		{% block script %}{% endblock %}
-	</body>
-</html>
+{% block body %}
+	<div class="body">
+		{% include "./partials/header.njk" %}
+		{% include "./partials/nav.njk" %}
+		{% block content %}{% endblock %}
+	</div>
+	<div class="toast toast-top toast-end">
+		{% block alert %}
+			{% if error %}
+				{{ macros.alert_error(error) }}
+			{% endif %}
+			{% if success %}
+				{{ macros.alert_success(success) }}
+			{% endif %}
+			{% if message %}
+				{{ macros.alert_info(message) }}
+			{% endif %}
+		{% endblock %}
+	</div>
+	{% block script %}{% endblock %}
+{% endblock %}

@@ -14,9 +14,9 @@ const __dirname = path.dirname(__filename);
 const fileUploadPath = path.resolve(__dirname, "..", "public", "img", "server");
 
 router.get("/server/:name", async (req, res) => {
-	const server = await db.queryFirst(`SELECT * FROM server WHERE name = "${req.params.name}"`);
+	const server = (await db.query(`SELECT * FROM server WHERE name = "${req.params.name}"`))[0];
 	if(server){
-		const serverModsRaw = await db.queryFirst(`SELECT mods.link, mods.name, mods.type FROM ${server.id}`);
+		const serverModsRaw = (await db.query(`SELECT mods.link, mods.name, mods.type FROM ${server.id}`))[0];
 		const serverMods = [];
 		for(let i = 0; i < serverModsRaw.mods.name.length; i++) {
 			if(serverModsRaw.mods.name[i] == null){
@@ -111,8 +111,8 @@ router.post("/server/addMod", async (req, res) => {
 		return res.render("error");
 	}
 	if(req.body.modName != undefined) {
-		const server = await db.queryFirst(`SELECT * FROM server WHERE name = "${req.body.server}"`);
-		const mod = await db.queryFirst(`SELECT * FROM mod WHERE name = "${req.body.modName}"`);
+		const server = (await db.query(`SELECT * FROM server WHERE name = "${req.body.server}"`))[0];
+		const mod = (await db.query(`SELECT * FROM mod WHERE name = "${req.body.modName}"`))[0];
 		logger.log(server);
 		logger.log(server.mods);
 		server.mods.push(mod.id);
@@ -122,7 +122,7 @@ router.post("/server/addMod", async (req, res) => {
 		return res.redirect(`/server/${server.name}`);
 	}
 	else if(req.body.name != undefined) {
-		const server = await db.queryFirst(`SELECT * FROM server WHERE name = "${req.body.server}"`);
+		const server = (await db.query(`SELECT * FROM server WHERE name = "${req.body.server}"`))[0];
 		const mod = await db.create("mod", {
 			name: req.body.name,
 			link: req.body.link,

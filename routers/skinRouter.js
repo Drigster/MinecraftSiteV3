@@ -24,7 +24,7 @@ async function getUserSkin(req, res) {
 	if(req.params.user.endsWith(".png")){
 		req.params.user = req.params.user.replace(".png", "");
 	}
-	const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.params.user}" OR username = "${req.params.user}"`);
+	const user = (await db.query(`SELECT * FROM user WHERE uuid = "${req.params.user}" OR username = "${req.params.user}"`))[0];
 	if (user) {
 		res.sendFile(`/img/skin/${user.uuid}.png`, fileSendOptions, function (err) {
 			if (err) {
@@ -43,7 +43,7 @@ async function getUserHeadSkin(req, res) {
 	if(req.params.user.endsWith(".png")){
 		req.params.user = req.params.user.replace(".png", "");
 	}
-	const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.params.user}" OR username = "${req.params.user}"`);
+	const user = (await db.query(`SELECT * FROM user WHERE uuid = "${req.params.user}" OR username = "${req.params.user}"`))[0];
 	if (user) {
 		res.sendFile(`/img/skin/${user.uuid}_head.png`, fileSendOptions, function (err) {
 			if (err) {

@@ -12,7 +12,7 @@ router.post("/api/change/username", async (req, res) => {
 		return res.redirect("/logout");
 	}
 
-	const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.jwt.payload.user.uuid}"`);
+	const user = (await db.query(`SELECT * FROM user WHERE uuid = "${req.jwt.payload.user.uuid}"`))[0];
 	if(user){
 		if(user.username == req.body.newusername){
 			req.session.error = "Новый никнейм не может совподать со старым!";
@@ -40,13 +40,13 @@ router.post("/api/change/username", async (req, res) => {
 });
 
 router.post("/api/change/email", async (req, res) => {
-	const emailRegex = /^[a-zA-Z\d]+(?:\.[a-zA-Z\d]+)*@[a-zA-Z\d]+(?:\.[a-zA-Z\d]+)*$/;
+	const emailRegex = /^[a-z\d]+(?:\.[a-z\d]+)*@[a-z\d]+(?:\.[a-z\d]+)*$/i;
 
 	if(!req.jwt.payload.user.uuid){
 		return res.redirect("/logout");
 	}
 
-	const user = await db.queryFirst(`SELECT * FROM user WHERE uuid = "${req.jwt.payload.user.uuid}"`);
+	const user = (await db.query(`SELECT * FROM user WHERE uuid = "${req.jwt.payload.user.uuid}"`))[0];
 	if(user){
 		if(user.email == req.body.newemail){
 			req.session.error = "Новая почта не может совподать со старой!";

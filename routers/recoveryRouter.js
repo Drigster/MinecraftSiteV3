@@ -27,7 +27,7 @@ router.post("/recovery", async (req, res) => {
 		return res.redirect("register");
 	}
 
-	const user = await db.queryFirst(`SELECT * FROM user WHERE email = "${req.body.email}"`);
+	const user = (await db.query(`SELECT * FROM user WHERE email = "${req.body.email}"`))[0];
 	if(!user){
 		req.session.error = "Аккаунт с данной почтой не найден!";
 		return res.redirect("/recovery");
@@ -76,7 +76,7 @@ router.post("/recovery/password/:token", async (req, res) => {
 		return res.render("info", { title: "Ошибка!", message: "Токен истёк или не верен. Попробуйте повторить востановление пароля." });
 	}
 	else{
-		const user = await db.queryFirst(`SELECT * FROM user WHERE email = "${verifyToken.email}"`);
+		const user = (await db.query(`SELECT * FROM user WHERE email = "${verifyToken.email}"`))[0];
 		if(!user){
 			return res.render("info", { title: "Ошибка!", message: "Токен истёк или не верен. Попробуйте повторить востановление пароля." });
 		}

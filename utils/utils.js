@@ -96,7 +96,7 @@ export async function sendRecoveryToken(email) {
 }
 
 export async function sendUsername(email) {
-	const user = await db.queryFirst(`SELECT * FROM user WHERE email = "${email}"`);
+	const user = (await db.query(`SELECT * FROM user WHERE email = "${email}"`))[0];
 
 	let info = await transporter.sendMail({
 		from: "\"DicePVP\" <auth@disepvp.ee>",
