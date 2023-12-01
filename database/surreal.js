@@ -36,7 +36,7 @@ export async function initDB() {
 				logger.log("ERROR", "Error signing in to database: " + err);
 			});
 
-		await db.use({ ns: "dice", db: "dice" });
+		await db.use({ ns: "dise", db: "dise" });
 
 		const users = await db.select("user");
 		if (users.length == 0) {
