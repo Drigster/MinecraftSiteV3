@@ -57,17 +57,17 @@ router.post("/api/auth/authorize", async (req, res) => {
 			}
 			else {
 				logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} is blocked!`);
-				return res.json({ error: "Пользователь не верефицирован или заблокирован!", code: 403 });
+				return res.status(403).json({ error: "auth.wrongtotp", code: 0 });
 			}
 		}
 		else {
 			logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} wrong password!`);
-			return res.json({ error: "Пароль не верен!", code: 400 });
+			return res.status(400).json({ error: "auth.wrongpassword", code: 0 });
 		}
 	}
 	else {
 		logger.log("DEBUG", `[/api/auth/authorize] User ${req.body.login} not found!`);
-		return res.json({ error: "Пользователь не найден", code: 400 });
+		return res.status(400).json({ error: "auth.usernotfound", code: 0 });
 	}
 });
 
@@ -112,7 +112,7 @@ router.get("/api/user/token/:sessionToken", async (req, res) => {
 	}
 	else {
 		logger.log("DEBUG", `[/api/user/token/:sessionToken] Session ${token} not found!`);
-		return res.json({ error: "Пользователь не найден", code: 400 });
+		return res.status(400).json({ error: "auth.usernotfound", code: 0 });
 	}
 });
 
@@ -144,7 +144,7 @@ router.get("/api/user/name/:username", async (req, res) => {
 	}
 	else {
 		logger.log("DEBUG", `[/api/user/name/:username] User ${req.params.username} not found!`);
-		return res.json({ error: "Пользователь не найден", code: 400 });
+		return res.status(400).json({ error: "auth.usernotfound", code: 0 });
 	}
 });
 
@@ -158,7 +158,7 @@ router.get("/api/user/uuid/:uuid", async (req, res) => {
 	}
 	else {
 		logger.log("DEBUG", `[/api/user/uuid/:uuid] User ${req.params.uuid} not found!`);
-		return res.json({ error: "Пользователь не найден", code: 400 });
+		return res.status(400).json({ error: "auth.usernotfound", code: 0 });
 	}
 });
 
@@ -198,12 +198,12 @@ router.post("/api/server/checkServer", async (req, res) => {
 		}
 		else{
 			logger.log("DEBUG", `[/api/server/checkServer] User ${user.username} server Ids are different: ${user.serverId} != ${req.body.serverId}!`);
-			return res.json({ error: "Пользователь не найден", code: 400 });
+			return res.json({ error: "auth.usernotfound", code: 0 });
 		}
 	}
 	else{
 		logger.log("DEBUG", `[/api/server/checkServer] User ${req.body.username} not found!`);
-		return res.json({ error: "Пользователь не найден", code: 400 });
+		return res.status(400).json({ error: "auth.usernotfound", code: 0 });
 	}
 });
 
